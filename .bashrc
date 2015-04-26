@@ -111,27 +111,6 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-export EDITOR="vim"
-# rvm config
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
-# end rvm config
-
-# pyenv config
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
-# end pyenv config
-
-# virtualenv config
-eval "$(pyenv virtualenv-init -)"
-# end virtualenv config
-
-# tmuxifier config
-export PATH="$HOME/.tmuxifier/bin:$PATH"
-eval "$(tmuxifier init -)"
-# end tmuxifier config
-
 # history completion
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'

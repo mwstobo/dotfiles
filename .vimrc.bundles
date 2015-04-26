@@ -22,7 +22,6 @@ Plugin 'vim-scripts/tComment'
 Plugin 'xolox/vim-session'
 Plugin 'xolox/vim-misc'
 Plugin 'rstacruz/sparkup'
-Plugin 'Valloric/YouCompleteMe'
 
 if filereadable(expand("~/.vimrc.bundles.local"))
   source ~/.vimrc.bundles.local
