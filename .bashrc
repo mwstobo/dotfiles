@@ -115,3 +115,7 @@ fi
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
 # end history completion
+
+export EDITOR='vim'
+
+FILE=~/.bashrc_local && test -f $FILE && source $FILE
