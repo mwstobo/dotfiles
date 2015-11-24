@@ -1,14 +1,16 @@
-[user]
-	email = mwstobo@gmail.com
-	name = Matt Stobo
-[color]
-  ui = auto
 [alias]
-  co = checkout
-  st = status
-[merge]
-  ff = only
+	st = status
+	co = checkout
 [fetch]
-  prune = true
+	prune = true
 [push]
 	default = simple
+[color]
+	ui = auto
+[user]
+	name = Matt Stobo
+	email = mwstobo@gmail.com
+[merge]
+	ff = only
+[core]
+	excludesfile = /home/matt/.gitignore_global
