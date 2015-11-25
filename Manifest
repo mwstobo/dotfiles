@@ -1,0 +1,7 @@
+.bashrc
+.bash_profile
+.vimrc
+.tmux.conf
+.gitconfig
+.gitignore_global
+.inputrc
