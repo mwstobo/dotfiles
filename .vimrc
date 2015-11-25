@@ -19,3 +19,7 @@ set hidden
 " Search
 set incsearch
 set hlsearch
+
+" Swapfile management
+set swapfile
+set dir=~/.vim/swap
