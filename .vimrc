@@ -23,3 +23,7 @@ set hlsearch
 " Swapfile management
 set swapfile
 set dir=~/.vim/swap
+
+" Show trailing whitespace
+highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
+match ExtraWhitespace /\s\+\%#\@<!$/
