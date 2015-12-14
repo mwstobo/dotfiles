@@ -11,3 +11,8 @@ complete -cf sudo
 
 # ignore duplicates
 export HISTCONTROL=ignoredups
+
+# Local customized path and environment settings, etc.
+if [ -f ~/.bashrc.local ]; then
+    . ~/.bashrc.local
+fi
