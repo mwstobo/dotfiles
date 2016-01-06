@@ -30,3 +30,7 @@ set dir=~/.vim/swap
 " Show trailing whitespace
 highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
 match ExtraWhitespace /\s\+\%#\@<!$/
+
+if filereadable(".vimrc.local")
+    source .vimrc.local
+endif
