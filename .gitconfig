@@ -13,4 +13,6 @@
 [merge]
 	ff = only
 [core]
-	excludesfile = /home/matt/.gitignore_global
+	excludesfile = ~/.gitignore_global
+[include]
+	path = ~/.gitconfig.local
