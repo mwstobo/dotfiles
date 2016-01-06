@@ -5,6 +5,9 @@ set relativenumber
 " Per file type indentation
 filetype plugin indent on
 
+" Syntax
+syntax on
+
 " Soft-tabs, 4 spaces
 set expandtab
 set shiftwidth=4
