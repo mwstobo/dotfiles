@@ -45,6 +45,10 @@ func! WordProcessorMode()
 endfu
 com! WP call WordProcessorMode()
 
-if filereadable(".vimrc.local")
-    source .vimrc.local
+if filereadable(expand("~/.vimrc.plugins"))
+    source ~/.vimrc.plugins
+endif
+
+if filereadable(expand("~/.vimrc.local"))
+    source ~/.vimrc.local
 endif
