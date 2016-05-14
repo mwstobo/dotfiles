@@ -1,3 +1,6 @@
+" No vi compatibility
+set nocompatible
+
 " Hybrid line number mode
 set number
 set relativenumber
@@ -30,6 +33,9 @@ set dir=~/.vim/swap
 " Show trailing whitespace
 highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
 match ExtraWhitespace /\s\+\%#\@<!$/
+
+set textwidth=79
+set colorcolumn=+1
 
 func! WordProcessorMode()
   setlocal formatoptions=1
