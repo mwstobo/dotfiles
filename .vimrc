@@ -37,6 +37,11 @@ match ExtraWhitespace /\s\+\%#\@<!$/
 set textwidth=79
 set colorcolumn=+1
 
+" Language specific
+autocmd Filetype html setlocal shiftwidth=2 softtabstop=2
+autocmd Filetype json setlocal shiftwidth=2 softtabstop=2
+autocmd Filetype javascript setlocal shiftwidth=2 softtabstop=2
+
 func! WordProcessorMode()
   setlocal formatoptions=1
   setlocal noexpandtab
