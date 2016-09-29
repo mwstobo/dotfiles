@@ -55,6 +55,7 @@ func! WordProcessorMode()
 endfu
 com! WP call WordProcessorMode()
 
+" Supposed to be used with vim-plug
 if filereadable(expand("~/.vimrc.plugins"))
     source ~/.vimrc.plugins
 endif
