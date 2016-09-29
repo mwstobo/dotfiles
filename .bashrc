@@ -15,6 +15,9 @@ export HISTCONTROL=ignoredups
 # PS1
 export PS1="\u@\h \w \\$ \[$(tput sgr0)\]"
 
+# Editor
+export EDITOR="vim"
+
 # Local customized path and environment settings, etc.
 if [ -f ~/.bashrc.local ]; then
     . ~/.bashrc.local
