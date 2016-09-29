@@ -16,3 +16,5 @@
 	excludesfile = ~/.gitignore_global
 [include]
 	path = ~/.gitconfig.local
+[url "ssh://git@github.com/"]
+	insteadOf = https://github.com/
