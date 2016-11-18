@@ -34,14 +34,21 @@ set dir=~/.vim/swap
 highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
 match ExtraWhitespace /\s\+\%#\@<!$/
 
-set textwidth=79
-set colorcolumn=+1
+" Comment out for now and set per language
+" set textwidth=79
+" set colorcolumn=+1
+
+" Tab completion mode
+set wildmode=longest,list,full
 
 " Language specific settings
 autocmd Filetype html setlocal shiftwidth=2 softtabstop=2
 autocmd Filetype json setlocal shiftwidth=2 softtabstop=2
 autocmd Filetype javascript setlocal shiftwidth=2 softtabstop=2
+autocmd Filetype coffee setlocal shiftwidth=2 softtabstop=2
 autocmd Filetype ruby setlocal shiftwidth=2 softtabstop=2
+autocmd Filetype markdown setlocal textwidth=79 colorcolumn=+1 spell
+autocmd Filetype text setlocal textwidth=79 colorcolumn=+1 spell
 
 func! WordProcessorMode()
   setlocal formatoptions=1
