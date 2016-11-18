@@ -9,8 +9,10 @@ alias tmux="tmux -2"
 # sudo completion
 complete -cf sudo
 
-# ignore duplicates
-export HISTCONTROL=ignoredups
+# history control
+export HISTCONTROL=erasedups
+export HISTFILESIZE=
+export HISTSIZE=
 
 # PS1
 export PS1="\u@\h \w \\$ \[$(tput sgr0)\]"
