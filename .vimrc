@@ -37,16 +37,20 @@ match ExtraWhitespace /\s\+\%#\@<!$/
 " Tab completion mode
 set wildmode=longest,list,full
 
+" Spelling
+set spelllang=en_ca
+
 " Language specific settings
-autocmd Filetype html setlocal shiftwidth=2 softtabstop=2
-autocmd Filetype json setlocal shiftwidth=2 softtabstop=2
-autocmd Filetype javascript setlocal shiftwidth=2 softtabstop=2
 autocmd Filetype coffee setlocal shiftwidth=2 softtabstop=2
-autocmd Filetype ruby setlocal shiftwidth=2 softtabstop=2
+autocmd Filetype html setlocal shiftwidth=2 softtabstop=2
+autocmd Filetype javascript setlocal shiftwidth=2 softtabstop=2
+autocmd Filetype json setlocal shiftwidth=2 softtabstop=2
 autocmd Filetype markdown setlocal colorcolumn=80 spell
-autocmd Filetype text setlocal wrap linebreak spell spelllang=en_ca noexpandtab
+autocmd Filetype python setlocal colorcolumn=80
+autocmd Filetype ruby setlocal shiftwidth=2 softtabstop=2
 autocmd Filetype text map j gj
 autocmd Filetype text map k gk
+autocmd Filetype text setlocal wrap linebreak noexpandtab
 
 " Supposed to be used with vim-plug
 if filereadable(expand("~/.vimrc.plugins"))
