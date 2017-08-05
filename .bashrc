@@ -10,7 +10,7 @@ alias tmux="tmux -2"
 complete -cf sudo
 
 # history control
-export HISTCONTROL=erasedups
+export HISTCONTROL=ignoreboth:erasedups
 export HISTFILESIZE=
 export HISTSIZE=
 
