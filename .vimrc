@@ -17,6 +17,7 @@ set softtabstop=4
 
 " Always show status line
 set laststatus=2
+set ruler
 
 " Hidden buffers
 set hidden
@@ -38,6 +39,15 @@ set wildmode=longest,list,full
 
 " Spelling
 set spelllang=en_ca
+
+" Backspace
+set backspace=indent,eol,start
+
+" Buffer switching
+nnoremap <leader>b :buffers<CR>:buffer<Space>
+
+" Terminal
+set term=$TERM
 
 " Language specific settings
 autocmd Filetype coffee setlocal shiftwidth=2 softtabstop=2
