@@ -52,6 +52,8 @@ autocmd Filetype go setlocal tabstop=4 shiftwidth=4 noexpandtab
 autocmd Filetype haskell setlocal colorcolumn=80
 autocmd Filetype sml setlocal shiftwidth=3 softtabstop=3 colorcolumn=80
 autocmd Filetype ocaml setlocal shiftwidth=2 softtabstop=2 colorcolumn=80
+autocmd Filetype yaml setlocal shiftwidth=2 softtabstop=2
+autocmd Filetype xml setlocal shiftwidth=2 softtabstop=2
 
 autocmd Filetype text map j gj
 autocmd Filetype text map k gk
