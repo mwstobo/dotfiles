@@ -1,5 +1,3 @@
-set nocompatible
-
 " Hybrid line number mode
 set number
 set relativenumber
@@ -26,10 +24,6 @@ set hidden
 set incsearch
 set hlsearch
 
-" Swapfile management
-set swapfile
-set dir=~/.vim/swap
-
 " Show trailing whitespace
 highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
 match ExtraWhitespace /\s\+\%#\@<!$/
@@ -46,11 +40,7 @@ set backspace=indent,eol,start
 " Buffer switching
 nnoremap <leader>b :buffers<CR>:buffer<Space>
 
-" Terminal
-set term=$TERM
-
 " Language specific settings
-autocmd Filetype coffee setlocal shiftwidth=2 softtabstop=2
 autocmd Filetype html setlocal shiftwidth=2 softtabstop=2
 autocmd Filetype less setlocal shiftwidth=2 softtabstop=2
 autocmd Filetype javascript setlocal shiftwidth=2 softtabstop=2
@@ -74,14 +64,16 @@ autocmd Filetype plaintex map k gk
 autocmd Filetype plaintex setlocal wrap linebreak noexpandtab
 
 " Supposed to be used with vim-plug
-if filereadable(expand("~/.vimrc.plugins"))
-    source ~/.vimrc.plugins
+let plugin_file = stdpath("config") . "/plugins.vim"
+if filereadable(plugin_file)
+    execute "source" plugin_file
 endif
 
-if filereadable(expand("~/.vimrc.local"))
-    source ~/.vimrc.local
+let local_file = stdpath("config") . "/local.vim"
+if filereadable(local_file)
+    execute "source" local_file
 endif
 
-if filereadable(expand("./.vimrc.dir"))
+if filereadable("./.vimrc.dir")
     source ./.vimrc.dir
 endif

@@ -18,7 +18,7 @@ export HISTSIZE=
 export PS1="\u@\h \w \\n\$ \[$(tput sgr0)\]"
 
 # Editor
-export EDITOR="vim"
+export EDITOR="nvim"
 
 # Local customized path and environment settings, etc.
 if [ -f ~/.bashrc.local ]; then

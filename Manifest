@@ -1,8 +1,8 @@
-.bashrc
-.bash_profile
-.vimrc
-.tmux.conf
-.gitconfig
-.gitignore_global
-.inputrc
-.jrnl_config
+.bashrc           ~> $HOME/.bashrc
+.bash_profile     ~> $HOME/.bash_profile
+.tmux.conf        ~> $HOME/.tmux.conf
+.gitconfig        ~> $HOME/.gitconfig
+.gitignore_global ~> $HOME/.gitignore_global
+.inputrc          ~> $HOME/.inputrc
+.jrnl_config      ~> $HOME/.jrnl_config
+init.vim          ~> $XDG_CONFIG_HOME/nvim/init.vim
