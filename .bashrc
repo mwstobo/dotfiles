@@ -19,6 +19,8 @@ export PS1="\u@\h \w \\n\$ \[$(tput sgr0)\]"
 
 # Editor
 export EDITOR="nvim"
+export DIFFPROG="nvim -d"
+alias vim="nvim"
 
 # Local customized path and environment settings, etc.
 if [ -f ~/.bashrc.local ]; then
