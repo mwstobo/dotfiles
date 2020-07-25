@@ -1,3 +1,6 @@
+;;; init --- emacs init
+;;; Commentary:
+;;; Code:
 ;; set up package
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -21,6 +24,47 @@
 
 ;; major modes
 (use-package go-mode
-  :mode "\\.go\\'"
-  :config
-  (add-hook 'before-save-hook 'gofmt-before-save))
+  :mode "\\.go\\'")
+
+(use-package pkgbuild-mode
+  :mode "/PKGBUILD\\'")
+
+;; useful packages
+(use-package which-key
+  :init (which-key-mode))
+
+(use-package magit
+  :bind (("C-x g" . magit-status)))
+
+(use-package dockerfile-mode
+  :mode "Dockerfile\\'")
+
+;; lsp-mode
+(use-package lsp-mode
+  :commands (lsp-deferred lsp-format-buffer lsp-organize-imports)
+  :hook ((go-mode) . lsp-deferred))
+
+(use-package lsp-java
+  :hook (java-mode . lsp-deferred))
+
+(use-package lsp-treemacs
+  :commands (lsp-treemacs-errors-list))
+
+(use-package flycheck
+  :init (global-flycheck-mode))
+
+(use-package company
+  :init (global-company-mode))
+
+(use-package yasnippet
+  :init (yas-global-mode))
+
+;; go formatting hooks
+(defun lsp-go-install-save-hooks ()
+  "Add formatting before-save-hooks for go-mode."
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t))
+(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+
+(provide 'init)
+;;; init.el ends here

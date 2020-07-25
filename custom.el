@@ -6,12 +6,22 @@
  '(ansi-color-faces-vector
    [default default default italic underline success warning error])
  '(custom-enabled-themes (quote (wombat)))
+ '(gc-cons-threshold 100000000)
  '(global-display-line-numbers-mode t)
  '(ido-enable-flex-matching t)
  '(ido-everywhere t)
  '(ido-mode (quote both) nil (ido))
  '(inhibit-startup-screen t)
- '(package-selected-packages (quote (go-mode use-package)))
+ '(lsp-java-format-settings-url
+   "https://raw.githubusercontent.com/spring-io/spring-javaformat/v0.0.6/.eclipse/eclipse-code-formatter.xml")
+ '(lsp-java-vmargs
+   (quote
+	("-noverify" "-Xmx1G" "-XX:+UseG1GC" "-XX:+UseStringDeduplication" "-javaagent:/home/matt/code/work/lombok-1.18.8.jar")))
+ '(lsp-prefer-capf t)
+ '(package-selected-packages
+   (quote
+	(lsp-treemacs lsp-java pkgbuild-mode dockerfile-mode magit yasnippet company which-key flycheck lsp-mode go-mode use-package)))
+ '(tab-width 4)
  '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
