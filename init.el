@@ -26,8 +26,18 @@
 (use-package go-mode
   :mode "\\.go\\'")
 
+(use-package kotlin-mode
+  :mode "\\.kts?\\'")
+
 (use-package pkgbuild-mode
   :mode "/PKGBUILD\\'")
+
+(use-package docker-compose-mode
+  :mode "docker-compose[^/]*\\.ya?ml\\'")
+
+(use-package terraform-mode
+  :commands (terraform-format-on-save-mode)
+  :mode "\\.tf\\(vars\\)?\\'")
 
 ;; useful packages
 (use-package which-key
@@ -40,9 +50,10 @@
   :mode "Dockerfile\\'")
 
 ;; lsp-mode
+(setq read-process-output-max (* 1024 1024)) ;; 1mb
 (use-package lsp-mode
   :commands (lsp-deferred lsp-format-buffer lsp-organize-imports)
-  :hook ((go-mode) . lsp-deferred))
+  :hook ((go-mode kotlin-mode) . lsp-deferred))
 
 (use-package lsp-java
   :hook (java-mode . lsp-deferred))
