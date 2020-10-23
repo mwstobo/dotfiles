@@ -29,9 +29,25 @@
   :commands ido-everywhere
   :init
   (ido-mode)
-  (ido-everywhere)
   :config
+  (ido-everywhere)
   (setq ido-enable-flex-matching t))
+
+;; paren
+(use-package paren
+  :config
+  (show-paren-mode)
+  (setq show-paren-style 'mixed))
+
+;; electric pair
+(use-package elec-pair
+  :config
+  (electric-pair-mode))
+
+;; compile
+(use-package compile
+  :config
+  (setq compilation-scroll-output 'first-error))
 
 ;; set custom file
 (setq custom-file "~/.emacs.d/custom.el")
@@ -40,22 +56,31 @@
 ;; one offs
 (tool-bar-mode 0)                            ; Turn off the tool bar
 (load-theme 'wombat)                         ; Use the wombat theme
-(set-frame-font "Source Code Pro-13")        ; Set the font
-(global-display-line-numbers-mode)           ; Always display line numbers
+(set-frame-font "Source Code Pro-11")        ; Set the font
 (setq inhibit-startup-screen t)              ; Get rid of the startup screen
 (setq gc-cons-threshold 100000000)           ; Performance tuning
 (setq tab-width 4)                           ; Tabs display with a width of 4
 (setq read-process-output-max (* 1024 1024)) ; Performance tuning
 
-;; org mode
-(require 'org)
-(setq org-todo-keywords
-      '((sequence "TODO" "IN-PROGRESS" "ON-HOLD" "WAITING" "DONE")))
+;; line numbers
+(use-package display-line-numbers
+  :config
+  (global-display-line-numbers-mode))
 
-;; installed packages
-;; (setq package-selected-packages '(json-mode nginx-mode git-link sbt-mode lsp-metals scala-mode terraform-mode kotlin-mode docker-compose-mode lsp-treemacs lsp-java pkgbuild-mode dockerfile-mode magit yasnippet company which-key flycheck lsp-mode go-mode use-package))
+;; org mode
+(use-package org
+  :config
+  (setq org-todo-keywords
+	'((sequence "TODO(t)" "IN-PROGRESS(p)" "NEEDS-DEPLOY(y)"
+		    "|" "IN-REVIEW(r)" "ON-HOLD(h)" "DONE(d)"))))
 
 ;;; Installed major modes
+(use-package js
+  :config
+  (add-hook
+   'js-mode-hook (lambda ()
+		   (setq js-indent-level 2))))
+
 (use-package go-mode
   :mode "\\.go\\'")
 
@@ -113,35 +138,52 @@
 (use-package git-link
   :commands git-link git-link-commit)
 
-(use-package org-jira
-  :defines jiralib-url
-  :config
-  (setq jiralib-url "https://500pxinc.atlassian.net"))
+(use-package github-review
+  :after forge)
 
 ;;; LSP Mode settings
 (use-package lsp-mode
   :commands lsp-deferred lsp-format-buffer lsp-organize-imports
-  :defines lsp-completion-provider
-  :hook ((go-mode kotlin-mode) . lsp-deferred)
+  :defines
+  lsp-completion-provider
+  lsp-pyls-plugins-autopep8-enabled
+  lsp-pyls-plugins-yapf-enabled
+  lsp-pyls-rename-backend
+  lsp-solargraph-use-bundler
+  lsp-solargraph-library-directories
+  :hook ((go-mode kotlin-mode python-mode js-mode ruby-mode) . lsp-deferred)
   :config
   (flycheck-mode)
+  (python-pyls-config)
+  (setq lsp-solargraph-use-bundler t)
+  (setq lsp-solargraph-library-directories
+	'("/usr/lib/ruby/"
+	  "~/.rvm/"
+	  "~/.gem/"
+	  "/home/matt/code/work/grouped-notifications-service/vendor/bundle/ruby/2.7.0/gems"))
   (setq lsp-completion-provider :capf))
 
 (use-package lsp-java
-  :hook (java-mode . lsp-deferred)
+  :after lsp-mode
   :config
+  (add-hook 'java-mode-hook 'lsp-deferred)
   (setq lsp-java-completion-import-order ["java" "javax" "org.springframework"])
-  (setq lsp-java-jdt-download-url "https://download.eclipse.org/jdtls/milestones/0.60.0/jdt-language-server-0.60.0-202008311720.tar.gz")
+  (setq lsp-java-jdt-download-url "https://download.eclipse.org/jdtls/milestones/0.63.0/jdt-language-server-0.63.0-202010141717.tar.gz")
   (setq lsp-java-format-settings-url "https://raw.githubusercontent.com/spring-io/spring-javaformat/v0.0.6/.eclipse/eclipse-code-formatter.xml")
   (setq lsp-java-vmargs '("-noverify" "-Xmx1G" "-XX:+UseG1GC" "-XX:+UseStringDeduplication" "-javaagent:/home/matt/code/work/lombok-1.18.8.jar")))
 
 (use-package lsp-metals
-  :hook (scala-mode . lsp-deferred))
+  :after lsp-mode
+  :config
+  (add-hook 'scala-mode-hook 'lsp-deferred))
 
 (use-package lsp-treemacs
+  :after lsp-mode
   :commands (lsp-treemacs-errors-list))
 
 (use-package flycheck
+  :hook
+  (emacs-lisp-mode . flycheck-mode)
   :config
   (add-to-list 'display-buffer-alist
                `(,(rx bos "*Flycheck errors*" eos)
@@ -152,13 +194,14 @@
 		 (window-height   . 0.33))))
 
 (use-package company
-  :init (global-company-mode)
   :config
+  (global-company-mode)
   (setq company-idle-delay 0.2)
   (setq company-minimum-prefix-length 2))
 
 (use-package yasnippet
-  :init (yas-global-mode))
+  :config
+  (yas-global-mode))
 
 ;; go formatting hooks
 (defun lsp-go-install-save-hooks ()
@@ -166,6 +209,13 @@
   (add-hook 'before-save-hook #'lsp-format-buffer t t)
   (add-hook 'before-save-hook #'lsp-organize-imports t t))
 (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+
+;; python lsp configs
+(defun python-pyls-config ()
+  "Python LSP configs."
+  (setq lsp-pyls-plugins-autopep8-enabled nil)
+  (setq lsp-pyls-plugins-yapf-enabled t)
+  (setq lsp-pyls-rename-backend 'rope))
 
 (provide 'init)
 ;;; init.el ends here
