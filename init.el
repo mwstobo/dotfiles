@@ -24,6 +24,9 @@
   (kbd "RET")
   'newline-and-indent)
 
+;; simple
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
 ;; ido
 (use-package ido
   :commands ido-everywhere
@@ -62,6 +65,17 @@
 (setq tab-width 4)                           ; Tabs display with a width of 4
 (setq read-process-output-max (* 1024 1024)) ; Performance tuning
 
+(use-package cc-mode
+  :defines
+  c-basic-offset
+  :config
+  (add-hook 'java-mode-hook 'configure-java-indentation))
+(defun configure-java-indentation ()
+  "Configure indentation style for Java code."
+  (setq c-basic-offset 4)
+  (setq tab-width 4)
+  (setq indent-tabs-mode t))
+
 ;; line numbers
 (use-package display-line-numbers
   :config
@@ -83,6 +97,9 @@
 
 (use-package go-mode
   :mode "\\.go\\'")
+
+(use-package tuareg
+  :mode ("\\.ml[ip]?\\'" . tuareg-mode))
 
 (use-package kotlin-mode
   :mode "\\.kts?\\'")
