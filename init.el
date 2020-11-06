@@ -25,6 +25,7 @@
 (tool-bar-mode 0)
 (load-theme 'wombat)
 (set-frame-font "Source Code Pro-11")
+(toggle-frame-maximized)
 (setq inhibit-startup-screen t)
 
 ;;; Performance tuning
