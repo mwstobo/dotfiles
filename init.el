@@ -21,6 +21,10 @@
 ;;; Configuration from the simple package
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
+;;; Basic indentation
+(setq tab-width 4)
+(setq indent-tabs-mode nil)
+
 ;;; Visual configuration
 (tool-bar-mode 0)
 (load-theme 'wombat)
@@ -90,7 +94,6 @@
    (lambda ()
      (lsp-deferred)
      (setq c-basic-offset 4)
-     (setq tab-width 4)
      (setq indent-tabs-mode t))))
 
 (use-package js
@@ -118,7 +121,9 @@
    'go-mode-hook
    (lambda ()
      (lsp-deferred)
-     (lsp-auto-format))))
+     (lsp-auto-format)
+     (setq c-basic-offset 4)
+     (setq indent-tabs-mode t))))
 
 (use-package tuareg
   :mode ("\\.ml[ip]?\\'" . tuareg-mode)
