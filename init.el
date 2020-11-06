@@ -13,13 +13,18 @@
     (package-refresh-contents)
     (package-install package)))
 
+(defun lsp-auto-format ()
+  "Enable formatting and organization on save."
+  (add-hook 'before-save-hook 'lsp-organize-imports)
+  (add-hook 'before-save-hook 'lsp-format-buffer))
+
 ;;; Configuration from the simple package
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;;; Visual configuration
 (tool-bar-mode 0)
 (load-theme 'wombat)
-(set-frame-font "Source Code Pro-13")
+(set-frame-font "Source Code Pro-11")
 (setq inhibit-startup-screen t)
 
 ;;; Performance tuning
@@ -65,41 +70,76 @@
   :config
   (setq compilation-scroll-output 'first-error))
 
-(use-package cc-mode
-  :config
-  (add-hook
-   'java-mode-hook
-   (lambda ()
-     (setq c-basic-offset 4)
-     (setq tab-width 4)
-     (setq indent-tabs-mode t))))
-
-(use-package js
-  :config
-  (add-hook
-   'js-mode-hook
-   (lambda ()
-     (setq js-indent-level 2))))
-
 (use-package display-line-numbers
   :config
   (global-display-line-numbers-mode))
 
 (use-package org
+  :mode ("\\.org\\'" . org-mode)
   :config
   (setq org-todo-keywords
 	'("TODO(t)" "IN-PROGRESS(p)" "NEEDS-DEPLOY(y)"
 	  "|" "IN-REVIEW(r)" "ON-HOLD(h)" "DONE(d)")))
 
 ;;; Installed major modes
+(use-package cc-mode
+  :init
+  (add-hook
+   'java-mode-hook
+   (lambda ()
+     (lsp-deferred)
+     (setq c-basic-offset 4)
+     (setq tab-width 4)
+     (setq indent-tabs-mode t))))
+
+(use-package js
+  :init
+  (add-hook
+   'js-mode-hook
+   (lambda ()
+     (lsp-deferred)
+     (setq js-indent-level 2))))
+
+(use-package python
+  :ensure nil
+  :init
+  (add-hook 'python-mode-hook 'lsp-deferred))
+
+(use-package ruby-mode
+  :ensure nil
+  :init
+  (add-hook 'ruby-mode-hook 'lsp-deferred))
+
 (use-package go-mode
-  :mode "\\.go\\'")
+  :mode "\\.go\\'"
+  :init
+  (add-hook
+   'go-mode-hook
+   (lambda ()
+     (lsp-deferred)
+     (lsp-auto-format))))
 
 (use-package tuareg
-  :mode ("\\.ml[ip]?\\'" . tuareg-mode))
+  :mode ("\\.ml[ip]?\\'" . tuareg-mode)
+  :init
+  (add-hook
+   'tuareg-mode-hook
+   (lambda ()
+     (lsp-deferred)
+     (lsp-auto-format))))
+
+(use-package tuareg-jbuild
+  :ensure nil
+  :mode ("/dune\\'" . tuareg-jbuild-mode))
+
+(use-package tuareg-opam
+  :ensure nil
+  :mode ("\\.opam\\'" . tuareg-opam-mode))
 
 (use-package kotlin-mode
-  :mode "\\.kts?\\'")
+  :mode "\\.kts?\\'"
+  :init
+  (add-hook 'kotlin-mode-hook 'lsp-deferred))
 
 (use-package pkgbuild-mode
   :mode "/PKGBUILD\\'")
@@ -111,7 +151,10 @@
   :mode "\\.tf\\(vars\\)?\\'")
 
 (use-package scala-mode
-  :mode "\\.\\(scala\\|sbt\\|worksheet\\.sc\\)\\'")
+  :mode "\\.\\(scala\\|sbt\\|worksheet\\.sc\\)\\'"
+  :init
+  (add-hook
+   'scala-mode-hook 'lsp-deferred))
 
 (use-package sbt-mode
   :after scala-mode
@@ -136,7 +179,7 @@
   :mode "\\.\\(graphql\\|gql\\)\\'")
 
 (use-package sql-indent
-  :mode "\\.sql\\")
+  :mode "\\.sql\\'")
 
 ;;; Other useful packages
 (use-package which-key
@@ -158,38 +201,52 @@
 ;;; LSP Mode settings
 (use-package lsp-mode
   :commands lsp-deferred lsp-format-buffer lsp-organize-imports
+  :config
+  (flycheck-mode))
+
+(use-package lsp-completion
+  :ensure nil
+  :after lsp-mode
+  :init
+  (setq lsp-completion-provider :capf))
+
+(use-package lsp-pyls
+  :ensure nil
+  :after lsp-mode
   :defines
-  lsp-completion-provider
   lsp-pyls-plugins-autopep8-enabled
   lsp-pyls-plugins-yapf-enabled
   lsp-pyls-rename-backend
+  :init
+  (setq lsp-pyls-plugins-autopep8-enabled nil)
+  (setq lsp-pyls-plugins-yapf-enabled t)
+  (setq lsp-pyls-rename-backend 'rope))
+
+(use-package lsp-solargraph
+  :ensure nil
+  :after lsp-mode
+  :defines
   lsp-solargraph-use-bundler
   lsp-solargraph-library-directories
-  :hook ((go-mode kotlin-mode python-mode js-mode ruby-mode) . lsp-deferred)
-  :config
-  (flycheck-mode)
-  (python-pyls-config)
+  :init
   (setq lsp-solargraph-use-bundler t)
   (setq lsp-solargraph-library-directories
 	'("/usr/lib/ruby/"
 	  "~/.rvm/"
 	  "~/.gem/"
-	  "/home/matt/code/work/grouped-notifications-service/vendor/bundle/ruby/2.7.0/gems"))
-  (setq lsp-completion-provider :capf))
+	  "/home/matt/code/work/grouped-notifications-service/vendor/bundle/ruby/2.7.0/gems")))
 
 (use-package lsp-java
   :after lsp-mode
-  :config
-  (add-hook 'java-mode-hook 'lsp-deferred)
+  :init
+  (setq lsp-java-save-actions-organize-imports t)
   (setq lsp-java-completion-import-order ["java" "javax" "org.springframework"])
   (setq lsp-java-jdt-download-url "https://download.eclipse.org/jdtls/milestones/0.63.0/jdt-language-server-0.63.0-202010141717.tar.gz")
   (setq lsp-java-format-settings-url "https://raw.githubusercontent.com/spring-io/spring-javaformat/v0.0.6/.eclipse/eclipse-code-formatter.xml")
   (setq lsp-java-vmargs '("-noverify" "-Xmx1G" "-XX:+UseG1GC" "-XX:+UseStringDeduplication" "-javaagent:/home/matt/code/work/lombok-1.18.8.jar")))
 
 (use-package lsp-metals
-  :after lsp-mode
-  :config
-  (add-hook 'scala-mode-hook 'lsp-deferred))
+  :after lsp-mode)
 
 (use-package lsp-treemacs
   :after lsp-mode
@@ -213,23 +270,15 @@
   (setq company-idle-delay 0.2)
   (setq company-minimum-prefix-length 2))
 
+(use-package company-dabbrev
+  :ensure nil
+  :after company
+  :init
+  (setq company-dabbrev-ignore-case nil))
+
 (use-package yasnippet
   :config
   (yas-global-mode))
-
-;; go formatting hooks
-(defun lsp-go-install-save-hooks ()
-  "Add formatting before-save-hooks for go-mode."
-  (add-hook 'before-save-hook #'lsp-format-buffer t t)
-  (add-hook 'before-save-hook #'lsp-organize-imports t t))
-(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
-
-;; python lsp configs
-(defun python-pyls-config ()
-  "Python LSP configs."
-  (setq lsp-pyls-plugins-autopep8-enabled nil)
-  (setq lsp-pyls-plugins-yapf-enabled t)
-  (setq lsp-pyls-rename-backend 'rope))
 
 (provide 'init)
 ;;; init.el ends here
