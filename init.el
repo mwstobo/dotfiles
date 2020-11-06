@@ -22,8 +22,8 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;;; Basic indentation
-(setq tab-width 4)
-(setq indent-tabs-mode nil)
+(setq-default tab-width 4)
+(setq-default indent-tabs-mode nil)
 
 ;;; Visual configuration
 (tool-bar-mode 0)
@@ -122,7 +122,6 @@
    (lambda ()
      (lsp-deferred)
      (lsp-auto-format)
-     (setq c-basic-offset 4)
      (setq indent-tabs-mode t))))
 
 (use-package tuareg
