@@ -53,6 +53,17 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
+;;; Backup configuration
+(use-package files
+  :ensure nil
+  :config
+  (setq backup-directory-alist '(("." . "~/.emacs.d/backups"))
+        version-control t
+        delete-old-versions t
+        kept-old-versions 2
+        kept-new-versions 6
+        backup-by-copying t))
+
 ;;; Built-in Emacs packages
 (use-package ido
   :commands ido-everywhere
@@ -184,7 +195,7 @@
   :mode "\\.\\(graphql\\|gql\\)\\'")
 
 (use-package sql-indent
-  :mode "\\.sql\\'")
+  :mode ("\\.sql\\'" . sqlind-minor-mode))
 
 ;;; Other useful packages
 (use-package which-key
