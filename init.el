@@ -127,6 +127,15 @@
   :init
   (add-hook 'ruby-mode-hook 'lsp-deferred))
 
+(use-package text-mode
+  :ensure nil
+  :init
+  (add-hook
+   'text-mode-hook
+   (lambda ()
+     (flyspell-mode)
+     (visual-line-mode))))
+
 (use-package go-mode
   :mode "\\.go\\'"
   :init
