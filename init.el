@@ -245,10 +245,6 @@
 (use-package lsp-mode
   :commands lsp-deferred lsp-format-buffer lsp-organize-imports
   :config
-  (lsp-register-client
-   (make-lsp-client :new-connection (lsp-stdio-connection '("terraform-ls" "serve"))
-                    :major-modes '(terraform-mode)
-                    :server-id 'terraform-ls))
   (flycheck-mode))
 
 (use-package lsp-ui
