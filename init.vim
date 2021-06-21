@@ -29,7 +29,9 @@ highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
 match ExtraWhitespace /\s\+\%#\@<!$/
 
 " Tab completion mode
-set wildmode=longest,list,full
+" set wildmode=longest,list,full
+set wildmenu
+set wildmode=longest:full,full
 
 " Spelling
 set spelllang=en_ca

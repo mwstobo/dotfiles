@@ -4,7 +4,8 @@
 
 ;;; Constants
 (defconst enabled-repos
-  '(("melpa" . "https://melpa.org/packages/")))
+  '(("melpa" . "https://melpa.org/packages/")
+    ("melpa-stable" . "https://stable.melpa.org/packages/")))
 
 ;;; Utility functions
 (defun ensure-package (package)
@@ -27,6 +28,7 @@
 
 ;;; Visual configuration
 (tool-bar-mode 0)
+(scroll-bar-mode 0)
 (load-theme 'wombat)
 (set-frame-font "Source Code Pro-11")
 (toggle-frame-maximized)
@@ -135,6 +137,22 @@
      (lsp-auto-format)
      (setq indent-tabs-mode t))))
 
+(use-package rust-mode
+  :mode "\\.rs\\'"
+  :init
+  (add-hook
+   'rust-mode-hook
+   (lambda ()
+     (lsp-deferred)
+     (lsp-auto-format)
+     (lsp-lens-mode)
+     (setq indent-tabs-mode t))))
+
+(use-package fsharp-mode
+  :mode "\\.fs[iylx]?\\'"
+  :init
+  (add-hook 'fsharp-mode-hook 'lsp-deferred))
+
 (use-package tuareg
   :mode ("\\.ml[ip]?\\'" . tuareg-mode)
   :init
@@ -218,7 +236,15 @@
 (use-package lsp-mode
   :commands lsp-deferred lsp-format-buffer lsp-organize-imports
   :config
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection '("terraform-ls" "serve"))
+                    :major-modes '(terraform-mode)
+                    :server-id 'terraform-ls))
   (flycheck-mode))
+
+(use-package lsp-ui
+  :after lsp-mode
+  :init (setq lsp-ui-doc-position 'top))
 
 (use-package lsp-completion
   :ensure nil
@@ -226,17 +252,8 @@
   :init
   (setq lsp-completion-provider :capf))
 
-(use-package lsp-pyls
-  :ensure nil
-  :after lsp-mode
-  :defines
-  lsp-pyls-plugins-autopep8-enabled
-  lsp-pyls-plugins-yapf-enabled
-  lsp-pyls-rename-backend
-  :init
-  (setq lsp-pyls-plugins-autopep8-enabled nil)
-  (setq lsp-pyls-plugins-yapf-enabled t)
-  (setq lsp-pyls-rename-backend 'rope))
+(use-package lsp-pyright
+  :after lsp-mode)
 
 (use-package lsp-solargraph
   :ensure nil
@@ -255,14 +272,18 @@
 (use-package lsp-java
   :after lsp-mode
   :init
-  (setq lsp-java-save-actions-organize-imports t)
-  (setq lsp-java-completion-import-order ["java" "javax" "org.springframework"])
-  (setq lsp-java-jdt-download-url "https://download.eclipse.org/jdtls/milestones/0.63.0/jdt-language-server-0.63.0-202010141717.tar.gz")
+  (setq lsp-java-jdt-download-url "https://download.eclipse.org/jdtls/milestones/0.70.0/jdt-language-server-0.70.0-202103051608.tar.gz")
   (setq lsp-java-format-settings-url "https://raw.githubusercontent.com/spring-io/spring-javaformat/v0.0.6/.eclipse/eclipse-code-formatter.xml")
-  (setq lsp-java-vmargs '("-noverify" "-Xmx1G" "-XX:+UseG1GC" "-XX:+UseStringDeduplication" "-javaagent:/home/matt/code/work/lombok-1.18.8.jar")))
+  (setq lsp-java-vmargs '("-noverify" "-Xmx2G" "-XX:+UseG1GC" "-XX:+UseStringDeduplication" "-javaagent:/home/matt/code/work/lombok-1.18.8.jar")))
 
 (use-package lsp-metals
   :after lsp-mode)
+
+(use-package lsp-rust
+  :ensure nil
+  :after lsp-mode
+  :config
+  (setq lsp-rust-clippy-preference "on"))
 
 (use-package lsp-treemacs
   :after lsp-mode
