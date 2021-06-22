@@ -5,10 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(org-agenda-files '("~/sync/work/work.org"))
  '(package-selected-packages
-   '(fsharp-mode lsp-pyright lsp-ui rust-mode lsp-treemacs treemacs lsp-mode magit company-dabbrev lsp-pyls tuareg tuareg-mode simple github-review js-mode graphql-mode lsp-java sql-indent yasnippet which-key use-package terraform-mode scala-mode sbt-mode pkgbuild-mode org-jira nginx-mode lsp-metals kotlin-mode json-mode go-mode git-link forge flycheck dockerfile-mode docker-compose-mode counsel company))
- '(safe-local-variable-values
-   '((lsp-java-format-enabled)
-     (lsp-java-format-on-type-enabled))))
+   '(fsharp-mode lsp-pyright lsp-ui rust-mode lsp-treemacs treemacs lsp-mode magit company-dabbrev lsp-pyls tuareg tuareg-mode simple github-review js-mode graphql-mode lsp-java sql-indent yasnippet which-key use-package terraform-mode scala-mode sbt-mode pkgbuild-mode org-jira nginx-mode lsp-metals kotlin-mode json-mode go-mode git-link forge flycheck dockerfile-mode docker-compose-mode counsel company)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

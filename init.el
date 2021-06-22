@@ -201,8 +201,12 @@
 (use-package scala-mode
   :mode "\\.\\(scala\\|sbt\\|worksheet\\.sc\\)\\'"
   :init
-  (add-hook
-   'scala-mode-hook 'lsp-deferred))
+  (add-hook 'scala-mode-hook 'lsp-deferred))
+
+(use-package clojure-mode
+  :mode "\\.\\(clj\\|dtm\\|edn\\)\\'"
+  :init
+  (add-hook 'clojure-mode-hook 'lsp-deferred))
 
 (use-package sbt-mode
   :after scala-mode
@@ -215,7 +219,9 @@
    minibuffer-local-completion-map))
 
 (use-package dockerfile-mode
-  :mode "Dockerfile\\'")
+  :mode "Dockerfile\\'"
+  :init
+  (add-hook 'dockerfile-mode-hook 'lsp-deferred))
 
 (use-package nginx-mode
   :mode "nginx\\.conf\\'")
@@ -246,9 +252,27 @@
 (use-package github-review
   :after forge)
 
+(use-package reformatter
+  :commands
+  reformatter--do-region)
+
+(reformatter-define google-java-format
+  :program "google-java-format"
+  :args '("-")
+  :lighter " GJF"
+  :group 'google-java-format)
+
+(use-package all-the-icons)
+
+(use-package markdown-mode
+  :mode ("README\\.md\\'" . gfm-mode)
+  :init (setq markdown-command "Markdown.pl"))
+
 ;;; LSP Mode settings
 (use-package lsp-mode
   :commands lsp-deferred lsp-format-buffer lsp-organize-imports
+  :init
+  (setq lsp-signature-render-documentation nil)
   :config
   (flycheck-mode))
 
@@ -256,13 +280,24 @@
   :after lsp-mode
   :init (setq lsp-ui-doc-position 'top))
 
+(use-package lsp-ido
+  :ensure nil
+  :after lsp-mode)
+
 (use-package lsp-completion
   :ensure nil
   :after lsp-mode
   :init
   (setq lsp-completion-provider :capf))
 
+(use-package lsp-rust
+  :ensure nil
+  :after lsp-mode
+  :init
+  (setq lsp-rust-clippy-preference "on"))
+
 (use-package lsp-pyright
+  :ensure t
   :after lsp-mode)
 
 (use-package lsp-solargraph
@@ -272,16 +307,16 @@
   lsp-solargraph-use-bundler
   lsp-solargraph-library-directories
   :init
-  (setq lsp-solargraph-use-bundler t)
-  (setq lsp-solargraph-library-directories
-	'("/usr/lib/ruby/"
-	  "~/.rvm/"
-	  "~/.gem/"
-	  "/home/matt/code/work/grouped-notifications-service/vendor/bundle/ruby/2.7.0/gems")))
+  (setq lsp-solargraph-use-bundler t))
+
+(use-package lsp-dockerfile
+  :ensure nil
+  :after lsp-mode)
 
 (use-package lsp-java
   :after lsp-mode
   :init
+  (setq lsp-java-completion-import-order ["java" "javax" "org.springframework"])
   (setq lsp-java-jdt-download-url "https://download.eclipse.org/jdtls/milestones/0.70.0/jdt-language-server-0.70.0-202103051608.tar.gz")
   (setq lsp-java-format-settings-url "https://raw.githubusercontent.com/spring-io/spring-javaformat/v0.0.6/.eclipse/eclipse-code-formatter.xml")
   (setq lsp-java-vmargs '("-noverify" "-Xmx2G" "-XX:+UseG1GC" "-XX:+UseStringDeduplication" "-javaagent:/home/matt/code/work/lombok-1.18.8.jar")))
