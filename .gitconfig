@@ -22,3 +22,5 @@
 	insteadOf = https://github.com/
 [github]
 	user = mwstobo
+[init]
+	defaultBranch = main
