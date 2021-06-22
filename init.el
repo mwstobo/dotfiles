@@ -184,6 +184,11 @@
   :init
   (add-hook 'kotlin-mode-hook 'lsp-deferred))
 
+(use-package elm-mode
+  :mode "\\.elm\\'"
+  :init
+  (add-hook 'elm-mode-hook 'lsp-deferred))
+
 (use-package pkgbuild-mode
   :mode "/PKGBUILD\\'")
 
