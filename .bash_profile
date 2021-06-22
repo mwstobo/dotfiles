@@ -11,9 +11,6 @@ export HISTCONTROL=ignoreboth
 export HISTFILESIZE=
 export HISTSIZE=
 
-# PS1
-export PS1="\u@\h \w \\n\$ \[$(tput sgr0)\]"
-
 # Editor
 export EDITOR="nvim"
 export DIFFPROG="nvim -d"
