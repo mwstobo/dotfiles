@@ -95,9 +95,42 @@
 (use-package org
   :mode ("\\.org\\'" . org-mode)
   :config
+  (setq org-agenda-files
+        '("~/sync/gtd/gtd.org"))
   (setq org-todo-keywords
-	'("TODO(t)" "IN-PROGRESS(p)" "NEEDS-DEPLOY(y)"
-	  "|" "IN-REVIEW(r)" "ON-HOLD(h)" "DONE(d)")))
+	'("TODO(t)" "|" "WAITING(w)" "DONE(d)")))
+
+(use-package org-capture
+  :ensure nil
+  :bind ("C-c c" . org-capture)
+  :config
+  (setq org-capture-bookmark nil)
+  (setq org-capture-templates
+        '(("t" "Todo [inbox]" entry (file "~/sync/gtd/inbox.org") "* TODO %i%?"))))
+
+(use-package org-refile
+  :ensure nil
+  :config
+  (setq org-refile-targets
+        '(("~/sync/gtd/gtd.org" :level . 1))))
+
+(use-package org-agenda
+  :ensure nil
+  :bind ("C-c a" . org-agenda)
+  :config
+  (setq org-agenda-custom-commands
+        '(("wa" "Work [all]"
+           tags-todo "work")
+          ("wn" "Work [next]"
+           ((tags-todo "work+@next")
+            (tags-todo "work+simple")
+            (todo "WAITING")))
+          ("pa" "Personal [all]"
+           tags-todo "personal")
+          ("pn" "Personal [next]"
+           ((tags-todo "personal+@next")
+            (tags-todo "personal+simple")
+            (todo "WAITING"))))))
 
 ;;; Installed major modes
 (use-package cc-mode
