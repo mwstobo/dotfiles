@@ -2,22 +2,19 @@
 ;;; Commentary:
 ;;; Code:
 
-;;; Constants
-(defconst enabled-repos
-  '(("melpa" . "https://melpa.org/packages/")
-    ("melpa-stable" . "https://stable.melpa.org/packages/")))
-
-;;; Utility functions
-(defun ensure-package (package)
-  "Ensure PACKAGE is installed."
-  (when (not (package-installed-p package))
-    (package-refresh-contents)
-    (package-install package)))
-
-(defun lsp-auto-format ()
-  "Enable formatting and organization on save."
-  (add-hook 'before-save-hook 'lsp-organize-imports)
-  (add-hook 'before-save-hook 'lsp-format-buffer))
+;;; straight.el
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
 ;;; Configuration from the simple package
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -30,7 +27,7 @@
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
 (load-theme 'wombat)
-(set-frame-font "Source Code Pro-11")
+(set-frame-font "Source Code Pro-12")
 (toggle-frame-maximized)
 (setq inhibit-startup-screen t)
 
@@ -39,17 +36,9 @@
 (setq read-process-output-max (* 1024 1024)) ; Performance tuning
 
 ;;; Setting up package and use-package
-(require 'package)
-(dolist (repo enabled-repos) (add-to-list 'package-archives repo t))
-(package-initialize)
-
-(ensure-package 'use-package)
+(straight-use-package 'use-package)
 (require 'use-package)
 (setq use-package-compute-statistics t)
-
-(use-package use-package-ensure
-  :config
-  (setq use-package-always-ensure t))
 
 ;;; Setting up custom
 (setq custom-file "~/.emacs.d/custom.el")
@@ -57,7 +46,6 @@
 
 ;;; Backup configuration
 (use-package files
-  :ensure nil
   :config
   (setq backup-directory-alist '(("." . "~/.emacs.d/backups"))
         version-control t
@@ -67,13 +55,17 @@
         backup-by-copying t))
 
 ;;; Built-in Emacs packages
-(use-package ido
-  :commands ido-everywhere
+(use-package icomplete
   :init
-  (ido-mode)
-  :config
-  (ido-everywhere)
-  (setq ido-enable-flex-matching t))
+  (fido-vertical-mode))
+
+;; (use-package ido
+;;   :commands ido-everywhere
+;;   :init
+;;   (ido-mode)
+;;   :config
+;;   (ido-everywhere)
+;;   (setq ido-enable-flex-matching t))
 
 (use-package paren
   :config
@@ -138,7 +130,6 @@
   (add-hook
    'java-mode-hook
    (lambda ()
-     (lsp-deferred)
      (setq c-basic-offset 4)
      (setq indent-tabs-mode t))))
 
@@ -147,21 +138,9 @@
   (add-hook
    'js-mode-hook
    (lambda ()
-     (lsp-deferred)
      (setq js-indent-level 2))))
 
-(use-package python
-  :ensure nil
-  :init
-  (add-hook 'python-mode-hook 'lsp-deferred))
-
-(use-package ruby-mode
-  :ensure nil
-  :init
-  (add-hook 'ruby-mode-hook 'lsp-deferred))
-
 (use-package text-mode
-  :ensure nil
   :init
   (add-hook
    'text-mode-hook
@@ -170,204 +149,104 @@
      (visual-line-mode))))
 
 (use-package go-mode
+  :straight t
   :mode "\\.go\\'"
   :init
   (add-hook
    'go-mode-hook
    (lambda ()
-     (lsp-deferred)
-     (lsp-auto-format)
      (setq indent-tabs-mode t))))
 
 (use-package rust-mode
-  :mode "\\.rs\\'"
-  :init
-  (add-hook
-   'rust-mode-hook
-   (lambda ()
-     (lsp-deferred)
-     (lsp-auto-format)
-     (lsp-lens-mode)
-     (setq indent-tabs-mode t))))
-
-(use-package fsharp-mode
-  :mode "\\.fs[iylx]?\\'"
-  :init
-  (add-hook 'fsharp-mode-hook 'lsp-deferred))
+  :straight t
+  :mode "\\.rs\\'")
 
 (use-package tuareg
-  :mode ("\\.ml[ip]?\\'" . tuareg-mode)
-  :init
-  (add-hook
-   'tuareg-mode-hook
-   (lambda ()
-     (lsp-deferred)
-     (lsp-auto-format))))
-
-(use-package tuareg-jbuild
-  :ensure nil
-  :mode ("/dune\\'" . tuareg-jbuild-mode))
+  :straight t
+  :mode ("\\.ml[ip]?\\'" . tuareg-mode))
 
 (use-package tuareg-opam
-  :ensure nil
   :mode ("\\.opam\\'" . tuareg-opam-mode))
 
-(use-package kotlin-mode
-  :mode "\\.kts?\\'"
-  :init
-  (add-hook 'kotlin-mode-hook 'lsp-deferred))
-
-(use-package elm-mode
-  :mode "\\.elm\\'"
-  :init
-  (add-hook 'elm-mode-hook 'lsp-deferred))
+(use-package dune
+  :straight t)
 
 (use-package pkgbuild-mode
+  :straight t
   :mode "/PKGBUILD\\'")
 
 (use-package docker-compose-mode
+  :straight t
   :mode "docker-compose[^/]*\\.ya?ml\\'")
 
 (use-package terraform-mode
+  :straight t
   :mode "\\.tf\\(vars\\)?\\'")
 
-(use-package scala-mode
-  :mode "\\.\\(scala\\|sbt\\|worksheet\\.sc\\)\\'"
-  :init
-  (add-hook 'scala-mode-hook 'lsp-deferred))
-
-(use-package clojure-mode
-  :mode "\\.\\(clj\\|dtm\\|edn\\)\\'"
-  :init
-  (add-hook 'clojure-mode-hook 'lsp-deferred))
-
-(use-package sbt-mode
-  :after scala-mode
-  :commands sbt-start sbt-command
-  :config
-  ;; WORKAROUND: allows using SPACE when in the minibuffer
-  (substitute-key-definition
-   'minibuffer-complete-word
-   'self-insert-command
-   minibuffer-local-completion-map))
-
 (use-package dockerfile-mode
-  :mode "Dockerfile\\'"
-  :init
-  (add-hook 'dockerfile-mode-hook 'lsp-deferred))
-
-(use-package nginx-mode
-  :mode "nginx\\.conf\\'")
+  :straight t
+  :mode "Dockerfile\\'")
 
 (use-package json-mode
+  :straight t
   :mode "\\.json\\'")
 
 (use-package graphql-mode
+  :straight t
   :mode "\\.\\(graphql\\|gql\\)\\'")
 
 (use-package sql-indent
+  :straight t
   :mode ("\\.sql\\'" . sqlind-minor-mode))
+
+(use-package typescript-mode
+  :straight t
+  :mode "\\.tsx?\\'"
+  :config
+  (setq typescript-indent-level 2))
 
 ;;; Other useful packages
 (use-package which-key
+  :straight t
   :init (which-key-mode))
 
 (use-package magit
+  :straight t
   :commands magit-status
   :bind (("C-x g" . magit-status)))
 
 (use-package forge
+  :straight t
   :after magit)
 
 (use-package git-link
+  :straight t
   :commands git-link git-link-commit)
 
-(use-package github-review
-  :after forge)
-
-(use-package reformatter
-  :commands
-  reformatter--do-region)
-
-(reformatter-define google-java-format
-  :program "google-java-format"
-  :args '("-")
-  :lighter " GJF"
-  :group 'google-java-format)
-
-(use-package all-the-icons)
+(use-package all-the-icons
+  :straight t)
 
 (use-package markdown-mode
+  :straight t
   :mode ("README\\.md\\'" . gfm-mode)
   :init (setq markdown-command "Markdown.pl"))
 
-;;; LSP Mode settings
-(use-package lsp-mode
-  :commands lsp-deferred lsp-format-buffer lsp-organize-imports
+;;; Language server packages
+(use-package eglot
+  :straight t
+  :commands (eglot eglot-ensure)
+  :hook
+  ((rust-mode python-mode) . eglot-ensure)
   :init
-  (setq lsp-signature-render-documentation nil)
+  (defun eglot-install-format-hooks ()
+    (add-hook 'before-save-hook #'eglot-format-buffer nil t))
+  (add-hook 'rust-mode-hook #'eglot-install-format-hooks)
   :config
-  (flycheck-mode))
-
-(use-package lsp-ui
-  :after lsp-mode
-  :init (setq lsp-ui-doc-position 'top))
-
-(use-package lsp-ido
-  :ensure nil
-  :after lsp-mode)
-
-(use-package lsp-completion
-  :ensure nil
-  :after lsp-mode
-  :init
-  (setq lsp-completion-provider :capf))
-
-(use-package lsp-rust
-  :ensure nil
-  :after lsp-mode
-  :init
-  (setq lsp-rust-clippy-preference "on"))
-
-(use-package lsp-pyright
-  :ensure t
-  :after lsp-mode)
-
-(use-package lsp-solargraph
-  :ensure nil
-  :after lsp-mode
-  :defines
-  lsp-solargraph-use-bundler
-  lsp-solargraph-library-directories
-  :init
-  (setq lsp-solargraph-use-bundler t))
-
-(use-package lsp-dockerfile
-  :ensure nil
-  :after lsp-mode)
-
-(use-package lsp-java
-  :after lsp-mode
-  :init
-  (setq lsp-java-completion-import-order ["java" "javax" "org.springframework"])
-  (setq lsp-java-jdt-download-url "https://download.eclipse.org/jdtls/milestones/0.70.0/jdt-language-server-0.70.0-202103051608.tar.gz")
-  (setq lsp-java-format-settings-url "https://raw.githubusercontent.com/spring-io/spring-javaformat/v0.0.6/.eclipse/eclipse-code-formatter.xml")
-  (setq lsp-java-vmargs '("-noverify" "-Xmx2G" "-XX:+UseG1GC" "-XX:+UseStringDeduplication" "-javaagent:/home/matt/code/work/lombok-1.18.8.jar")))
-
-(use-package lsp-metals
-  :after lsp-mode)
-
-(use-package lsp-rust
-  :ensure nil
-  :after lsp-mode
-  :config
-  (setq lsp-rust-clippy-preference "on"))
-
-(use-package lsp-treemacs
-  :after lsp-mode
-  :commands (lsp-treemacs-errors-list))
+  (add-to-list 'eglot-server-programs '(python-mode . ("pyright-langserver" "--stdio")))
+  (add-to-list 'eglot-server-programs '(rust-mode . ("rust-analyzer"))))
 
 (use-package flycheck
+  :straight t
   :hook
   (emacs-lisp-mode . flycheck-mode)
   :config
@@ -380,18 +259,19 @@
 		 (window-height   . 0.33))))
 
 (use-package company
+  :straight t
   :config
   (global-company-mode)
   (setq company-idle-delay 0.2)
   (setq company-minimum-prefix-length 2))
 
 (use-package company-dabbrev
-  :ensure nil
   :after company
   :init
   (setq company-dabbrev-ignore-case nil))
 
 (use-package yasnippet
+  :straight t
   :config
   (yas-global-mode))
 
