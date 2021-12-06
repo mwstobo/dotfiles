@@ -82,7 +82,7 @@
   :mode ("\\.org\\'" . org-mode)
   :init
   (setq org-agenda-files
-        '("~/Documents/gtd/gtd.org"))
+        '("~/sync/gtd/gtd.org"))
   (setq org-todo-keywords
 	'("TODO(t)" "|" "WAITING(w)" "DONE(d)")))
 
@@ -91,13 +91,13 @@
   :init
   (setq org-capture-bookmark nil)
   (setq org-capture-templates
-        '(("t" "Todo [inbox]" entry (file "~/Documents/gtd/inbox.org") "* TODO %i%?"))))
+        '(("t" "Todo [inbox]" entry (file "~/sync/gtd/inbox.org") "* TODO %i%?"))))
 
 (use-package org-refile
   :after org
   :init
   (setq org-refile-targets
-        '(("~/Documents/gtd/gtd.org" :level . 1))))
+        '(("~/sync/gtd/gtd.org" :level . 1))))
 
 (use-package org-agenda
   :bind ("C-c a" . org-agenda)
