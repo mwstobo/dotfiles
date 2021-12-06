@@ -16,11 +16,9 @@
 	ff = only
 [core]
 	excludesfile = ~/.gitignore_global
-[include]
-	path = ~/.gitconfig.local
-[url "ssh://git@github.com/"]
-	insteadOf = https://github.com/
 [github]
 	user = mwstobo
 [init]
 	defaultBranch = main
+[include]
+	path = ~/.gitconfig.local
