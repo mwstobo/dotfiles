@@ -17,7 +17,7 @@
   (load bootstrap-file nil 'nomessage))
 
 ;;; Configuration from the simple package
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
 
 ;;; Basic indentation
 (setq-default tab-width 4)
@@ -27,9 +27,9 @@
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
 (load-theme 'wombat)
-(set-frame-font "Source Code Pro-12")
 (toggle-frame-maximized)
 (setq inhibit-startup-screen t)
+(delete '(vc-mode vc-mode) mode-line-format)
 
 ;;; Performance tuning
 (setq gc-cons-threshold 100000000)           ; Performance tuning
@@ -37,6 +37,7 @@
 
 ;;; Setting up package and use-package
 (straight-use-package 'use-package)
+(add-to-list 'elisp-flymake-byte-compile-load-path "~/.emacs.d/straight/repos/use-package")
 (require 'use-package)
 (setq use-package-compute-statistics t)
 
@@ -56,16 +57,8 @@
 
 ;;; Built-in Emacs packages
 (use-package icomplete
-  :init
+  :config
   (fido-vertical-mode))
-
-;; (use-package ido
-;;   :commands ido-everywhere
-;;   :init
-;;   (ido-mode)
-;;   :config
-;;   (ido-everywhere)
-;;   (setq ido-enable-flex-matching t))
 
 (use-package paren
   :config
@@ -84,78 +77,56 @@
   :config
   (global-display-line-numbers-mode))
 
+;;; Org
 (use-package org
   :mode ("\\.org\\'" . org-mode)
-  :config
+  :init
   (setq org-agenda-files
-        '("~/sync/gtd/gtd.org"))
+        '("~/Documents/gtd/gtd.org"))
   (setq org-todo-keywords
 	'("TODO(t)" "|" "WAITING(w)" "DONE(d)")))
 
 (use-package org-capture
-  :ensure nil
   :bind ("C-c c" . org-capture)
-  :config
+  :init
   (setq org-capture-bookmark nil)
   (setq org-capture-templates
-        '(("t" "Todo [inbox]" entry (file "~/sync/gtd/inbox.org") "* TODO %i%?"))))
+        '(("t" "Todo [inbox]" entry (file "~/Documents/gtd/inbox.org") "* TODO %i%?"))))
 
 (use-package org-refile
-  :ensure nil
-  :config
+  :after org
+  :init
   (setq org-refile-targets
-        '(("~/sync/gtd/gtd.org" :level . 1))))
+        '(("~/Documents/gtd/gtd.org" :level . 1))))
 
 (use-package org-agenda
-  :ensure nil
   :bind ("C-c a" . org-agenda)
-  :config
+  :init
   (setq org-agenda-custom-commands
-        '(("wa" "Work [all]"
-           tags-todo "work")
-          ("wn" "Work [next]"
-           ((tags-todo "work+@next")
-            (tags-todo "work+simple")
-            (todo "WAITING")))
-          ("pa" "Personal [all]"
-           tags-todo "personal")
-          ("pn" "Personal [next]"
-           ((tags-todo "personal+@next")
-            (tags-todo "personal+simple")
+        '(("n" "Next"
+           ((tags-todo "@next")
+            (tags-todo "simple")
             (todo "WAITING"))))))
 
 ;;; Installed major modes
-(use-package cc-mode
+(use-package elisp-mode
   :init
-  (add-hook
-   'java-mode-hook
-   (lambda ()
-     (setq c-basic-offset 4)
-     (setq indent-tabs-mode t))))
+  (add-hook 'emacs-lisp-mode-hook #'flymake-mode))
 
 (use-package js
   :init
-  (add-hook
-   'js-mode-hook
-   (lambda ()
-     (setq js-indent-level 2))))
+  (setq js-indent-level 2))
 
 (use-package text-mode
   :init
-  (add-hook
-   'text-mode-hook
-   (lambda ()
-     (flyspell-mode)
-     (visual-line-mode))))
+  (add-hook 'text-mode-hook #'flyspell-mode)
+  (add-hook 'text-mode-hook #'visual-line-mode))
 
 (use-package go-mode
   :straight t
   :mode "\\.go\\'"
   :init
-  (add-hook
-   'go-mode-hook
-   (lambda ()
-     (setq indent-tabs-mode t))))
+  (add-hook 'go-mode-hook (setq indent-tabs-mode t)))
 
 (use-package rust-mode
   :straight t
@@ -163,13 +134,17 @@
 
 (use-package tuareg
   :straight t
-  :mode ("\\.ml[ip]?\\'" . tuareg-mode))
-
-(use-package tuareg-opam
-  :mode ("\\.opam\\'" . tuareg-opam-mode))
+  :mode
+  ("\\.ml[ip]?\\'" . tuareg-mode)
+  ("\\.opam\\'" . tuareg-opam-mode))
 
 (use-package dune
+  :mode ("\\(?:\\`\\|/\\)dune\\(?:\\.inc\\|\\-project\\)?\\'" . dune-mode)
   :straight t)
+
+(use-package kotlin-mode
+  :straight t
+  :mode "\\.kts?\\'")
 
 (use-package pkgbuild-mode
   :straight t
@@ -205,10 +180,20 @@
   :config
   (setq typescript-indent-level 2))
 
+(use-package markdown-mode
+  :straight t
+  :mode ("README\\.md\\'" . gfm-mode)
+  :init (setq markdown-command "Markdown.pl"))
+
+(use-package protobuf-mode
+  :straight t
+  :mode ("\\.proto\\'"))
+
 ;;; Other useful packages
 (use-package which-key
   :straight t
-  :init (which-key-mode))
+  :config
+  (which-key-mode))
 
 (use-package magit
   :straight t
@@ -226,54 +211,63 @@
 (use-package all-the-icons
   :straight t)
 
-(use-package markdown-mode
-  :straight t
-  :mode ("README\\.md\\'" . gfm-mode)
-  :init (setq markdown-command "Markdown.pl"))
-
 ;;; Language server packages
+;;; LSP Mode settings
+(use-package lsp-mode
+  :straight t
+  :commands lsp-deferred lsp-format-buffer lsp-organize-imports
+  :init
+  (setq lsp-signature-render-documentation nil)
+  (setq lsp-rust-clippy-preference "on")
+  (setq lsp-completion-provider :capf)
+  :config
+  (flycheck-mode))
+
+(use-package lsp-ui
+  :straight t
+  :after lsp-mode
+  :init
+  (setq lsp-ui-doc-position 'top))
+
+(use-package lsp-pyright
+  :straight t
+  :after lsp-mode)
+
+(use-package lsp-treemacs
+  :straight t
+  :after lsp-mode)
+
+(use-package company
+  :straight t
+  :hook
+  (prog-mode . company-mode)
+  :init
+  (setq company-dabbrev-ignore-case nil)
+  (setq company-idle-delay 0.2)
+  (setq company-minimum-prefix-length 2))
+
+(use-package yasnippet
+  :straight t
+  :hook
+  (prog-mode . yas-minor-mode))
+
+;;; eglot
 (use-package eglot
   :straight t
-  :commands (eglot eglot-ensure)
   :hook
-  ((rust-mode python-mode) . eglot-ensure)
+  ((kotlin-mode python-mode rust-mode) . eglot-ensure)
   :init
-  (defun eglot-install-format-hooks ()
-    (add-hook 'before-save-hook #'eglot-format-buffer nil t))
-  (add-hook 'rust-mode-hook #'eglot-install-format-hooks)
+  (setq eglot-connect-timeout 120)
+  (defun eglot-install-autoformat ()
+    (add-hook 'before-save-hook #'eglot-format nil t))
+  (add-hook 'rust-mode-hook #'eglot-install-autoformat)
   :config
   (add-to-list 'eglot-server-programs '(python-mode . ("pyright-langserver" "--stdio")))
   (add-to-list 'eglot-server-programs '(rust-mode . ("rust-analyzer"))))
 
-(use-package flycheck
-  :straight t
-  :hook
-  (emacs-lisp-mode . flycheck-mode)
-  :config
-  (add-to-list 'display-buffer-alist
-               `(,(rx bos "*Flycheck errors*" eos)
-		 (display-buffer-reuse-window
-		  display-buffer-in-side-window)
-		 (side            . bottom)
-		 (reusable-frames . visible)
-		 (window-height   . 0.33))))
-
-(use-package company
-  :straight t
-  :config
-  (global-company-mode)
-  (setq company-idle-delay 0.2)
-  (setq company-minimum-prefix-length 2))
-
-(use-package company-dabbrev
-  :after company
-  :init
-  (setq company-dabbrev-ignore-case nil))
-
-(use-package yasnippet
-  :straight t
-  :config
-  (yas-global-mode))
+;;; Local config
+(if (file-readable-p "~/.emacs.d/init-local.el")
+    (load "~/.emacs.d/init-local.el"))
 
 (provide 'init)
 ;;; init.el ends here
