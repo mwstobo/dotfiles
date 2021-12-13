@@ -258,9 +258,9 @@
   ((kotlin-mode python-mode rust-mode) . eglot-ensure)
   :init
   (setq eglot-connect-timeout 120)
-  (defun eglot-install-autoformat ()
-    (add-hook 'before-save-hook #'eglot-format nil t))
-  (add-hook 'rust-mode-hook #'eglot-install-autoformat)
+  (defun eglot-install-format-hooks ()
+    (add-hook 'before-save-hook #'eglot-format-buffer nil t))
+  (add-hook 'rust-mode-hook #'eglot-install-format-hooks)
   :config
   (add-to-list 'eglot-server-programs '(python-mode . ("pyright-langserver" "--stdio")))
   (add-to-list 'eglot-server-programs '(rust-mode . ("rust-analyzer"))))
