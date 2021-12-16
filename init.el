@@ -74,8 +74,8 @@
   (setq compilation-scroll-output 'first-error))
 
 (use-package display-line-numbers
-  :config
-  (global-display-line-numbers-mode))
+  :init
+  (add-hook 'prog-mode-hook #'display-line-numbers-mode))
 
 ;;; Org
 (use-package org
@@ -100,7 +100,6 @@
         '(("~/.emacs.d/gtd/gtd.org" :level . 1))))
 
 (use-package org-agenda
-  :after org
   :bind ("C-c a" . org-agenda)
   :init
   (defun org-gtd-distance-to-header ()
