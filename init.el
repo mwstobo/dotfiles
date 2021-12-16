@@ -269,7 +269,7 @@
 (use-package eglot
   :straight t
   :hook
-  ((kotlin-mode python-mode rust-mode) . eglot-ensure)
+  ((kotlin-mode python-mode rust-mode typescript-mode js-mode) . eglot-ensure)
   :init
   (setq eglot-connect-timeout 120)
   (defun eglot-install-format-hooks ()
@@ -277,6 +277,7 @@
   (add-hook 'rust-mode-hook #'eglot-install-format-hooks)
   :config
   (add-to-list 'eglot-server-programs '(python-mode . ("pyright-langserver" "--stdio")))
+  (add-to-list 'eglot-server-programs '(typescript-mode . ("typescript-language-server" "--stdio")))
   (add-to-list 'eglot-server-programs '(rust-mode . ("rust-analyzer"))))
 
 ;;; Local config
