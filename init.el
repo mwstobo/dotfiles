@@ -100,13 +100,27 @@
         '(("~/.emacs.d/gtd/gtd.org" :level . 1))))
 
 (use-package org-agenda
+  :after org
   :bind ("C-c a" . org-agenda)
   :init
-  (setq org-agenda-custom-commands
-        '(("n" "Next"
-           ((tags-todo "@next")
-            (tags-todo "simple")
-            (todo "WAITING"))))))
+  (defun org-gtd-distance-to-header ()
+    (save-excursion
+      (push-mark)
+      (org-up-element)
+      (count-lines (point) (mark))))
+  (defun org-gtd-skip-all-but-next ()
+    (if (eq (org-gtd-distance-to-header) 1) nil (point-max)))
+  (setq
+   org-agenda-custom-commands
+   '(("n" "Next"
+      ((tags-todo
+        "projects"
+        ((org-agenda-overriding-header "Next tasks for projects: ")
+         (org-agenda-skip-function #'org-gtd-skip-all-but-next)))
+       (tags-todo
+        "simple"
+        ((org-agenda-overriding-header "Next simple tasks: "))))
+      ((org-agenda-prefix-format "%(car (last (org-get-outline-path))): "))))))
 
 ;;; Installed major modes
 (use-package elisp-mode
