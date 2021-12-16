@@ -108,7 +108,7 @@
       (org-up-element)
       (count-lines (point) (mark))))
   (defun org-gtd-skip-all-but-next ()
-    (if (eq (org-gtd-distance-to-header) 1) nil (point-max)))
+    (if (eq (org-gtd-distance-to-header) 1) nil (outline-next-heading)))
   (setq
    org-agenda-custom-commands
    '(("n" "Next"
