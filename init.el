@@ -18,10 +18,13 @@
 
 ;;; Configuration from the simple package
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
+(column-number-mode)
 
 ;;; Basic indentation
 (setq-default tab-width 4)
 (setq-default indent-tabs-mode nil)
+(setq-default show-trailing-whitespace t)
+(setq-default indicate-empty-lines t)
 
 ;;; Visual configuration
 (tool-bar-mode 0)
