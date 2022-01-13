@@ -67,6 +67,8 @@
 
 ;;; Built-in Emacs packages
 (use-package icomplete
+  :bind
+  (:map icomplete-minibuffer-map ("SPC" . self-insert-command))
   :config
   (fido-vertical-mode))
 
@@ -95,6 +97,17 @@
         '("~/.emacs.d/gtd/gtd.org"))
   (setq org-todo-keywords
 	    '("TODO(t)" "|" "WAITING(w)" "DONE(d)")))
+
+(use-package org-roam
+  :straight t
+  :init
+  (setq org-roam-directory "~/.emacs.d/roam")
+  :bind
+  (("C-c n i" . org-roam-node-insert)
+   ("C-c n f" . org-roam-node-find)
+   ("C-c n l" . org-roam-buffer-toggle))
+  :config
+  (org-roam-db-autosync-mode))
 
 (use-package org-capture
   :bind ("C-c c" . org-capture)
