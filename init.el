@@ -56,6 +56,14 @@
     (find-file user-init-file)))
 (global-set-key (kbd "C-C I") #'my-find-init-file)
 
+;;; Kill excess whitespace when joining lines
+(defadvice kill-line (before kill-line-autoreindent activate)
+  "Kill excess whitespace when joining lines."
+  (when (and (eolp) (not (bolp)))
+    (save-excursion
+      (forward-char 1)
+      (just-one-space 1))))
+
 ;;; Backup configuration
 (use-package files
   :config
