@@ -52,7 +52,8 @@
 (defun my-find-init-file ()
   "Open the 'user-init-file'."
   (interactive)
-  (find-file user-init-file))
+  (let ((vc-follow-symlinks t))
+    (find-file user-init-file)))
 (global-set-key (kbd "C-C I") #'my-find-init-file)
 
 ;;; Backup configuration
