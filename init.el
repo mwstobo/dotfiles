@@ -89,6 +89,17 @@
   :init
   (add-hook 'prog-mode-hook #'display-line-numbers-mode))
 
+(use-package flymake
+  :bind
+  (("C-c e" . flymake-show-buffer-diagnostics))
+  :config
+  (add-to-list 'display-buffer-alist
+               '("\\*Flymake diagnostics.*\\*"
+                 (display-buffer-in-direction)
+                 (direction . bottom)
+                 (window-width . fit-window-to-buffer-horizontally)
+                 (window-height . 0.2))))
+
 ;;; Org
 (use-package org
   :mode ("\\.org\\'" . org-mode)
