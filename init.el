@@ -78,7 +78,7 @@
 (use-package icomplete
   :bind
   (:map icomplete-minibuffer-map ("SPC" . self-insert-command))
-  :config
+  :init
   (fido-vertical-mode))
 
 (use-package paren
