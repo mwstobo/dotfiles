@@ -311,7 +311,7 @@
 (use-package eglot
   :straight t
   :hook
-  ((kotlin-mode python-mode rust-mode typescript-mode js-mode) . eglot-ensure)
+  ((kotlin-mode python-mode rust-mode typescript-mode js-mode go-mode) . eglot-ensure)
   :init
   (setq eglot-connect-timeout 120)
   (defun eglot-install-format-hooks ()
