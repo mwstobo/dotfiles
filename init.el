@@ -44,8 +44,8 @@
 (setq use-package-compute-statistics t)
 
 ;;; Setting up custom
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file)
+(setq custom-file "~/.emacs.d/custom.el") ; Set, but don't load
+
 
 ;;; Init file access
 (defun my-find-init-file ()
@@ -65,13 +65,13 @@
 
 ;;; Backup configuration
 (use-package files
-  :config
-  (setq backup-directory-alist '(("." . "~/.emacs.d/backups"))
-        version-control t
-        delete-old-versions t
-        kept-old-versions 2
-        kept-new-versions 6
-        backup-by-copying t))
+  :custom
+  (backup-directory-alist '(("." . "~/.emacs.d/backups")))
+  (version-control t)
+  (delete-old-versions t)
+  (kept-old-versions 2)
+  (kept-new-versions 6)
+  (backup-by-copying t))
 
 ;;; Built-in Emacs packages
 (use-package icomplete
@@ -81,17 +81,19 @@
   (fido-vertical-mode))
 
 (use-package paren
+  :custom
+  (show-paren-style 'mixed)
   :config
-  (show-paren-mode)
-  (setq show-paren-style 'mixed))
+  (show-paren-mode))
+
 
 (use-package elec-pair
   :config
   (electric-pair-mode))
 
 (use-package compile
-  :config
-  (setq compilation-scroll-output 'first-error))
+  :custom
+  (compilation-scroll-output 'first-error))
 
 (use-package display-line-numbers
   :init
@@ -111,16 +113,14 @@
 ;;; Org
 (use-package org
   :mode ("\\.org\\'" . org-mode)
-  :init
-  (setq org-agenda-files
-        '("~/.emacs.d/gtd/gtd.org"))
-  (setq org-todo-keywords
-	    '("TODO(t)" "|" "WAITING(w)" "DONE(d)")))
+  :custom
+  (org-agenda-files '("~/.emacs.d/gtd/gtd.org"))
+  (org-todo-keywords '("TODO(t)" "|" "WAITING(w)" "DONE(d)")))
 
 (use-package org-roam
   :straight t
-  :init
-  (setq org-roam-directory "~/.emacs.d/roam")
+  :custom
+  (org-roam-directory "~/.emacs.d/roam")
   :bind
   (("C-c n i" . org-roam-node-insert)
    ("C-c n f" . org-roam-node-find)
@@ -130,16 +130,15 @@
 
 (use-package org-capture
   :bind ("C-c c" . org-capture)
-  :init
-  (setq org-capture-bookmark nil)
-  (setq org-capture-templates
-        '(("t" "Todo [inbox]" entry (file "~/.emacs.d/gtd/inbox.org") "* TODO %i%?"))))
+  :custom
+  (org-capture-bookmark nil)
+  (org-capture-templates
+   '(("t" "Todo [inbox]" entry (file "~/.emacs.d/gtd/inbox.org") "* TODO %i%?"))))
 
 (use-package org-refile
   :after org
-  :init
-  (setq org-refile-targets
-        '(("~/.emacs.d/gtd/gtd.org" :level . 1))))
+  :custom
+  (org-refile-targets '(("~/.emacs.d/gtd/gtd.org" :level . 1))))
 
 (use-package org-agenda
   :bind ("C-c a" . org-agenda)
@@ -151,8 +150,8 @@
       (count-lines (point) (mark))))
   (defun org-gtd-skip-all-but-next ()
     (if (eq (org-gtd-distance-to-header) 1) nil (outline-next-heading)))
-  (setq
-   org-agenda-custom-commands
+  :custom
+  (org-agenda-custom-commands
    '(("n" "Next"
       ((tags-todo
         "projects"
@@ -169,8 +168,8 @@
   (add-hook 'emacs-lisp-mode-hook #'flymake-mode))
 
 (use-package js
-  :init
-  (setq js-indent-level 2))
+  :custom
+  (js-indent-level 2))
 
 (use-package text-mode
   :init
@@ -232,13 +231,14 @@
 (use-package typescript-mode
   :straight t
   :mode "\\.tsx?\\'"
-  :config
-  (setq typescript-indent-level 2))
+  :custom
+  (typescript-indent-level 2))
 
 (use-package markdown-mode
   :straight t
   :mode ("README\\.md\\'" . gfm-mode)
-  :init (setq markdown-command "Markdown.pl"))
+  :custom
+  (markdown-command "Markdown.pl"))
 
 (use-package protobuf-mode
   :straight t
@@ -247,9 +247,9 @@
 (use-package plantuml-mode
   :straight t
   :mode ("\\.\\(plantuml\\|pum\\|plu\\)\\'")
-  :config
-  (setq plantuml-default-exec-mode 'executable)
-  (setq plantuml-executable-path "/usr/local/bin/plantuml"))
+  :custom
+  (plantuml-default-exec-mode 'executable)
+  (plantuml-executable-path "/usr/local/bin/plantuml"))
 
 ;;; Other useful packages
 (use-package which-key
@@ -294,18 +294,18 @@
 (use-package lsp-mode
   :straight t
   :commands lsp-deferred lsp-format-buffer lsp-organize-imports
-  :init
-  (setq lsp-signature-render-documentation nil)
-  (setq lsp-rust-clippy-preference "on")
-  (setq lsp-completion-provider :capf)
+  :custom
+  (lsp-signature-render-documentation nil)
+  (lsp-rust-clippy-preference "on")
+  (lsp-completion-provider :capf)
   :config
   (flycheck-mode))
 
 (use-package lsp-ui
   :straight t
   :after lsp-mode
-  :init
-  (setq lsp-ui-doc-position 'top))
+  :custom
+  (lsp-ui-doc-position 'top))
 
 (use-package lsp-pyright
   :straight t
@@ -319,10 +319,10 @@
   :straight t
   :hook
   (prog-mode . company-mode)
-  :init
-  (setq company-dabbrev-ignore-case nil)
-  (setq company-idle-delay 0.2)
-  (setq company-minimum-prefix-length 2))
+  :custom
+  (company-dabbrev-ignore-case nil)
+  (company-idle-delay 0.2)
+  (company-minimum-prefix-length 2))
 
 (use-package yasnippet
   :straight t
@@ -335,10 +335,11 @@
   :hook
   ((kotlin-mode python-mode rust-mode typescript-mode js-mode go-mode) . eglot-ensure)
   :init
-  (setq eglot-connect-timeout 500)
   (defun eglot-install-format-hooks ()
     (add-hook 'before-save-hook #'eglot-format-buffer nil t))
   (add-hook 'rust-mode-hook #'eglot-install-format-hooks)
+  :custom
+  (eglot-connect-timeout 500)
   :config
   (add-to-list 'eglot-server-programs '(python-mode . ("pyright-langserver" "--stdio")))
   (add-to-list 'eglot-server-programs '(typescript-mode . ("typescript-language-server" "--stdio")))
