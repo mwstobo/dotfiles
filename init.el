@@ -117,6 +117,12 @@
   (org-agenda-files '("~/.emacs.d/gtd/gtd.org"))
   (org-todo-keywords '("TODO(t)" "|" "WAITING(w)" "DONE(d)")))
 
+(use-package verb
+  :straight t
+  :after org
+  :config
+  (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
+
 (use-package org-roam
   :straight t
   :custom
