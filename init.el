@@ -245,6 +245,13 @@
   :straight t
   :mode ("\\.proto\\'"))
 
+(use-package plantuml-mode
+  :straight t
+  :mode ("\\.\\(plantuml\\|pum\\|plu\\)\\'")
+  :config
+  (setq plantuml-default-exec-mode 'executable)
+  (setq plantuml-executable-path "/usr/local/bin/plantuml"))
+
 ;;; Other useful packages
 (use-package which-key
   :straight t
