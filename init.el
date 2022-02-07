@@ -24,7 +24,6 @@
 (setq-default tab-width 4)
 (setq-default indent-tabs-mode nil)
 (setq-default show-trailing-whitespace t)
-(setq-default indicate-empty-lines t)
 
 ;;; Visual configuration
 (tool-bar-mode 0)
