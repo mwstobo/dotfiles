@@ -335,7 +335,7 @@
   :hook
   ((kotlin-mode python-mode rust-mode typescript-mode js-mode go-mode) . eglot-ensure)
   :init
-  (setq eglot-connect-timeout 120)
+  (setq eglot-connect-timeout 500)
   (defun eglot-install-format-hooks ()
     (add-hook 'before-save-hook #'eglot-format-buffer nil t))
   (add-hook 'rust-mode-hook #'eglot-install-format-hooks)
