@@ -273,6 +273,22 @@
 (use-package all-the-icons
   :straight t)
 
+(use-package olivetti
+  :straight t
+  :commands
+  (olivetti-mode)
+  :init
+  (defvar olivetti--line-spacing nil)
+  :custom
+  (olivetti-style 'fancy)
+  (olivetti-mode-on-hook
+   #'(lambda ()
+       (setq olivetti--line-spacing line-spacing)
+       (setq line-spacing 0.1)))
+  (olivetti-mode-off-hook
+   #'(lambda ()
+       (setq line-spacing olivetti--line-spacing))))
+
 ;;; Language server packages
 ;;; LSP Mode settings
 (use-package lsp-mode
