@@ -342,7 +342,8 @@
   :hook
   (prog-mode . company-mode)
   :custom
-  (company-dabbrev-ignore-case nil)
+  (company-dabbrev-ignore-case 'keep-prefix)
+  (company-dabbrev-downcase nil)
   (company-idle-delay 0.2)
   (company-minimum-prefix-length 2))
 
