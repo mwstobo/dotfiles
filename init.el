@@ -46,7 +46,6 @@
 ;;; Setting up custom
 (setq custom-file "~/.emacs.d/custom.el") ; Set, but don't load
 
-
 ;;; Init file access
 (defun my-find-init-file ()
   "Open the 'user-init-file'."
@@ -85,7 +84,6 @@
   (show-paren-style 'mixed)
   :config
   (show-paren-mode))
-
 
 (use-package elec-pair
   :config
@@ -134,12 +132,30 @@
   :config
   (org-roam-db-autosync-mode))
 
+(defun mwstobo--write-empty-file-if-not-exists (full-path)
+  "Create file at FULL-PATH if it doesn't already exist."
+  (if (not (file-exists-p full-path))
+      (with-temp-buffer (write-file full-path)))
+  full-path)
+
+(defun mwstobo--dated-meeting-org-filename (report-directory)
+  "Return filename in REPORT-DIRECTORY with the current date prepended."
+  (let ((date-string (format-time-string "%Y-%m-%d"))
+        (meeting-name (read-string "Meeting name: ")))
+    (expand-file-name (format "%s-%s.org" date-string meeting-name) report-directory)))
+
+(defun mwstobo--generate-meeting-notes ()
+  "Generate a meeting note file and return the filename."
+  (mwstobo--write-empty-file-if-not-exists
+   (mwstobo--dated-meeting-org-filename "~/.emacs.d/org/meetings")))
+
 (use-package org-capture
   :bind ("C-c c" . org-capture)
   :custom
   (org-capture-bookmark nil)
   (org-capture-templates
-   '(("t" "Todo [inbox]" entry (file "~/.emacs.d/gtd/inbox.org") "* TODO %i%?"))))
+   '(("t" "Todo [inbox]" entry (file "~/.emacs.d/gtd/inbox.org") "* TODO %i%?")
+     ("m" "Meeting notes" plain (file mwstobo--generate-meeting-notes) "* Notes\n\n* Action Items"))))
 
 (use-package org-refile
   :after org
