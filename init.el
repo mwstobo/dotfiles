@@ -346,13 +346,13 @@
   :custom
   (company-dabbrev-ignore-case 'keep-prefix)
   (company-dabbrev-downcase nil)
-  (company-idle-delay 0.2)
-  (company-minimum-prefix-length 2))
+  (company-idle-delay 0.1)
+  (company-minimum-prefix-length 1))
 
 (use-package yasnippet
   :straight t
   :hook
-  (lsp-mode . yas-minor-mode))
+  ((lsp-mode eglot-mode-hook) . yas-minor-mode))
 
 (use-package flycheck
   :straight t
