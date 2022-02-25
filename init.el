@@ -107,6 +107,20 @@
                  (window-width . fit-window-to-buffer-horizontally)
                  (window-height . 0.2))))
 
+;;; Tree sitter
+(use-package tree-sitter-langs
+  :straight t)
+
+(use-package tree-sitter
+  :after tree-sitter-langs
+  :straight t
+  :init
+  (dolist
+      (hook-symbol
+       (list 'kotlin-mode-hook 'go-mode-hook 'rust-mode-hook 'js-mode-hook 'python-mode-hook))
+    (add-hook hook-symbol #'tree-sitter-mode))
+  (add-hook 'tree-sitter-mode-hook #'tree-sitter-hl-mode))
+
 ;;; Org
 (use-package org
   :mode ("\\.org\\'" . org-mode)
