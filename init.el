@@ -34,12 +34,11 @@
 (delete '(vc-mode vc-mode) mode-line-format)
 
 ;;; Performance tuning
-(setq gc-cons-threshold 100000000)           ; Performance tuning
+(setq gc-cons-threshold 200000000)           ; Performance tuning
 (setq read-process-output-max (* 1024 1024)) ; Performance tuning
 
 ;;; Setting up package and use-package
 (straight-use-package 'use-package)
-(add-to-list 'elisp-flymake-byte-compile-load-path "~/.emacs.d/straight/repos/use-package")
 (require 'use-package)
 (setq use-package-compute-statistics t)
 
@@ -185,10 +184,6 @@
       ((org-agenda-prefix-format "%(car (last (org-get-outline-path))): "))))))
 
 ;;; Installed major modes
-(use-package elisp-mode
-  :init
-  (add-hook 'emacs-lisp-mode-hook #'flymake-mode))
-
 (use-package js
   :custom
   (js-indent-level 2))
@@ -316,24 +311,16 @@
 (use-package lsp-mode
   :straight t
   :commands lsp-deferred lsp-format-buffer lsp-organize-imports
+  :hook
+  ((kotlin-mode) . lsp-deferred)
   :custom
+  (lsp-use-plists t)
   (lsp-signature-render-documentation nil)
   (lsp-rust-clippy-preference "on")
   (lsp-completion-provider :capf)
-  :config
-  (flycheck-mode))
-
-(use-package lsp-ui
-  :straight t
-  :after lsp-mode
-  :custom
-  (lsp-ui-doc-position 'top))
+  (lsp-kotlin-external-sources-auto-convert-to-kotlin nil))
 
 (use-package lsp-pyright
-  :straight t
-  :after lsp-mode)
-
-(use-package lsp-treemacs
   :straight t
   :after lsp-mode)
 
@@ -350,17 +337,23 @@
 (use-package yasnippet
   :straight t
   :hook
-  (prog-mode . yas-minor-mode))
+  (lsp-mode . yas-minor-mode))
+
+(use-package flycheck
+  :straight t
+  :hook
+  (prog-mode . flycheck-mode))
 
 ;;; eglot
 (use-package eglot
   :straight t
   :hook
-  ((kotlin-mode python-mode rust-mode typescript-mode js-mode go-mode) . eglot-ensure)
+  ((python-mode rust-mode typescript-mode js-mode go-mode) . eglot-ensure)
   :init
   (defun eglot-install-format-hooks ()
     (add-hook 'before-save-hook #'eglot-format-buffer nil t))
   (add-hook 'rust-mode-hook #'eglot-install-format-hooks)
+  (add-hook 'go-mode-hook #'eglot-install-format-hooks)
   :custom
   (eglot-connect-timeout 500)
   :config
