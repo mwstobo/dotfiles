@@ -125,6 +125,7 @@
 (use-package org
   :mode ("\\.org\\'" . org-mode)
   :custom
+  (org-export-with-toc nil)
   (org-agenda-files '("~/.emacs.d/gtd/gtd.org"))
   (org-todo-keywords '("TODO(t)" "|" "WAITING(w)" "DONE(d)")))
 
