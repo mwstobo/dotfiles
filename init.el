@@ -117,7 +117,7 @@
   :init
   (dolist
       (hook-symbol
-       (list 'kotlin-mode-hook 'go-mode-hook 'rust-mode-hook 'js-mode-hook 'python-mode-hook))
+       (list 'go-mode-hook 'rust-mode-hook 'js-mode-hook 'python-mode-hook))
     (add-hook hook-symbol #'tree-sitter-mode))
   (add-hook 'tree-sitter-mode-hook #'tree-sitter-hl-mode))
 
