@@ -95,17 +95,6 @@
   :init
   (add-hook 'prog-mode-hook #'display-line-numbers-mode))
 
-(use-package flymake
-  :bind
-  (("C-c e" . flymake-show-buffer-diagnostics))
-  :config
-  (add-to-list 'display-buffer-alist
-               '("\\*Flymake diagnostics.*\\*"
-                 (display-buffer-in-direction)
-                 (direction . bottom)
-                 (window-width . fit-window-to-buffer-horizontally)
-                 (window-height . 0.2))))
-
 ;;; Tree sitter
 (use-package tree-sitter-langs
   :straight t)
@@ -332,7 +321,13 @@
   :straight t
   :commands lsp-deferred lsp-format-buffer lsp-organize-imports
   :hook
-  ((kotlin-mode) . lsp-deferred)
+  ((kotlin-mode python-mode rust-mode typescript-mode js-mode go-mode) . lsp-deferred)
+  :init
+  (defun lsp-mode-install-auto-format-hooks ()
+    (add-hook 'before-save-hook #'lsp-format-buffer nil t)
+    (add-hook 'before-save-hook #'lsp-organize-imports nil t))
+  (add-hook 'go-mode-hook #'lsp-mode-install-auto-format-hooks)
+  (add-hook 'rust-mode-hook #'lsp-mode-install-auto-format-hooks)
   :custom
   (lsp-use-plists t)
   (lsp-signature-render-documentation nil)
@@ -363,23 +358,6 @@
   :straight t
   :hook
   (prog-mode . flycheck-mode))
-
-;;; eglot
-(use-package eglot
-  :straight t
-  :hook
-  ((python-mode rust-mode typescript-mode js-mode go-mode) . eglot-ensure)
-  :init
-  (defun eglot-install-format-hooks ()
-    (add-hook 'before-save-hook #'eglot-format-buffer nil t))
-  (add-hook 'rust-mode-hook #'eglot-install-format-hooks)
-  (add-hook 'go-mode-hook #'eglot-install-format-hooks)
-  :custom
-  (eglot-connect-timeout 500)
-  :config
-  (add-to-list 'eglot-server-programs '(python-mode . ("pyright-langserver" "--stdio")))
-  (add-to-list 'eglot-server-programs '(typescript-mode . ("typescript-language-server" "--stdio")))
-  (add-to-list 'eglot-server-programs '(rust-mode . ("rust-analyzer"))))
 
 ;;; Local config
 (if (file-readable-p "~/.emacs.d/init-local.el")
