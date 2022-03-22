@@ -23,7 +23,6 @@
 ;;; Basic indentation
 (setq-default tab-width 4)
 (setq-default indent-tabs-mode nil)
-(setq-default show-trailing-whitespace t)
 
 ;;; Visual configuration
 (tool-bar-mode 0)
@@ -199,6 +198,12 @@
       ((org-agenda-prefix-format "%(car (last (org-get-outline-path))): "))))))
 
 ;;; Installed major modes
+(use-package prog-mode
+  :init
+  (defun set-show-trailing-whitespace ()
+    (setq show-trailing-whitespace t))
+  (add-hook 'prog-mode-hook #'set-show-trailing-whitespace))
+
 (use-package js
   :custom
   (js-indent-level 2))
