@@ -253,7 +253,7 @@
   :straight t
   :mode ("README\\.md\\'" . gfm-mode)
   :custom
-  (markdown-command "Markdown.pl"))
+  (markdown-command "markdown"))
 
 (use-package protobuf-mode
   :straight t
