@@ -123,17 +123,6 @@
   :config
   (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
 
-(use-package org-roam
-  :straight t
-  :custom
-  (org-roam-directory "~/.emacs.d/roam")
-  :bind
-  (("C-c n i" . org-roam-node-insert)
-   ("C-c n f" . org-roam-node-find)
-   ("C-c n l" . org-roam-buffer-toggle))
-  :config
-  (org-roam-db-autosync-mode))
-
 (defun mwstobo--write-empty-file-if-not-exists (full-path)
   "Create file at FULL-PATH if it doesn't already exist."
   (if (not (file-exists-p full-path))
