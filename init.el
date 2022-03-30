@@ -304,6 +304,21 @@
    #'(lambda ()
        (setq line-spacing olivetti--line-spacing))))
 
+(use-package expand-region
+  :straight t
+  :bind ("C-=" . er/expand-region))
+
+(use-package avy
+  :straight t
+  :bind
+  ("C-:" . avy-goto-char)
+  ("C-'" . avy-goto-char-2)
+  ("M-g f" . avy-goto-line)
+  ("M-g w" . avy-goto-word-1)
+  ("M-g e" . avy-goto-word-0)
+  :config
+  (avy-setup-default))
+
 ;;; Language server packages
 ;;; LSP Mode settings
 (use-package lsp-mode
