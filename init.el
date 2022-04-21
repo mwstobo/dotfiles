@@ -138,33 +138,21 @@
   :mode ("\\.org\\'" . org-mode)
   :custom
   (org-export-with-toc nil)
-  (org-agenda-files '("~/.emacs.d/gtd/gtd.org"))
-  (org-todo-keywords '("TODO(t)" "|" "WAITING(w)" "DONE(d)")))
-
-(defun mwstobo--write-empty-file-if-not-exists (full-path)
-  "Create file at FULL-PATH if it doesn't already exist."
-  (if (not (file-exists-p full-path))
-      (with-temp-buffer (write-file full-path)))
-  full-path)
-
-(defun mwstobo--dated-meeting-org-filename (report-directory)
-  "Return filename in REPORT-DIRECTORY with the current date prepended."
-  (let ((date-string (format-time-string "%Y-%m-%d"))
-        (meeting-name (read-string "Meeting name: ")))
-    (expand-file-name (format "%s-%s.org" date-string meeting-name) report-directory)))
-
-(defun mwstobo--generate-meeting-notes ()
-  "Generate a meeting note file and return the filename."
-  (mwstobo--write-empty-file-if-not-exists
-   (mwstobo--dated-meeting-org-filename "~/.emacs.d/org/meetings")))
+  (org-agenda-files '("~/.emacs.d/gtd/gtd.org" "~/.emacs.d/gtd/inbox.org"))
+  (org-todo-keywords '("TODO(t)" "NEXT(n)" "|" "WAITING(w)" "DONE(d)")))
 
 (use-package org-capture
-  :bind ("C-c c" . org-capture)
+  :bind
+  ("C-c c" . org-capture)
+  ("C-c i" . org-capture-inbox)
+  :config
+  (defun org-capture-inbox ()
+    (interactive)
+    (org-capture nil "i"))
   :custom
   (org-capture-bookmark nil)
   (org-capture-templates
-   '(("t" "Todo [inbox]" entry (file "~/.emacs.d/gtd/inbox.org") "* TODO %i%?")
-     ("m" "Meeting notes" plain (file mwstobo--generate-meeting-notes) "* Notes\n\n* Action Items"))))
+   '(("i" "Inbox" entry (file "~/.emacs.d/gtd/inbox.org") "* TODO %?\nCaptured on %U"))))
 
 (use-package org-refile
   :after org
@@ -182,8 +170,17 @@
   (defun org-gtd-skip-all-but-next ()
     (if (eq (org-gtd-distance-to-header) 1) nil (outline-next-heading)))
   :custom
+  (org-agenda-hide-tags-regexp ".")
   (org-agenda-custom-commands
-   '(("n" "Next"
+   '(("g" "GTD"
+      ((agenda "")
+       (todo
+        "NEXT"
+        ((org-agenda-overriding-header "Tasks")))
+       (tags-todo
+        "inbox"
+        ((org-agenda-overriding-header "Inbox")))))
+     ("n" "Next"
       ((tags-todo
         "projects"
         ((org-agenda-overriding-header "Next tasks for projects: ")
