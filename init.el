@@ -141,12 +141,6 @@
   (org-agenda-files '("~/.emacs.d/gtd/gtd.org"))
   (org-todo-keywords '("TODO(t)" "|" "WAITING(w)" "DONE(d)")))
 
-(use-package verb
-  :straight t
-  :after org
-  :config
-  (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
-
 (defun mwstobo--write-empty-file-if-not-exists (full-path)
   "Create file at FULL-PATH if it doesn't already exist."
   (if (not (file-exists-p full-path))
