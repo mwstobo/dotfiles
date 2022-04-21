@@ -343,7 +343,7 @@
   :straight t
   :commands lsp-deferred lsp-format-buffer lsp-organize-imports
   :hook
-  ((kotlin-mode python-mode rust-mode typescript-mode js-mode go-mode) . lsp-deferred)
+  ((python-mode rust-mode typescript-mode js-mode go-mode) . lsp-deferred)
   :init
   (defun lsp-mode-install-auto-format-hooks ()
     (add-hook 'before-save-hook #'lsp-format-buffer nil t)
