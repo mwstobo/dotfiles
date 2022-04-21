@@ -61,6 +61,10 @@
       (just-one-space 1))))
 
 ;;; Backup configuration
+(use-package savehist
+  :init
+  (savehist-mode))
+
 (use-package files
   :custom
   (backup-directory-alist '(("." . "~/.emacs.d/backups")))
