@@ -70,13 +70,6 @@
   (kept-new-versions 6)
   (backup-by-copying t))
 
-;;; Built-in Emacs packages
-(use-package icomplete
-  :bind
-  (:map icomplete-minibuffer-map ("SPC" . self-insert-command))
-  :init
-  (fido-vertical-mode))
-
 (use-package paren
   :custom
   (show-paren-style 'mixed)
@@ -108,6 +101,33 @@
        (list 'go-mode-hook 'rust-mode-hook 'js-mode-hook 'python-mode-hook))
     (add-hook hook-symbol #'tree-sitter-mode))
   (add-hook 'tree-sitter-mode-hook #'tree-sitter-hl-mode))
+
+;;; Vertico
+(use-package vertico
+  :straight (:files (:defaults "extensions/*"))
+  :init
+  (vertico-mode)
+  :custom
+  (vertico-cycle t))
+
+(use-package vertico-directory
+  :after vertico
+  :bind
+  (:map vertico-map
+        ("RET" . vertico-directory-enter)
+        ("DEL" . vertico-directory-delete-char)
+        ("M-DEL" . vertico-directory-delete-word)))
+
+(use-package orderless
+  :straight t
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
+
+(use-package marginalia
+  :straight t
+  :init
+  (marginalia-mode))
 
 ;;; Org
 (use-package org
