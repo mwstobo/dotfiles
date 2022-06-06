@@ -28,7 +28,7 @@
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
 (load-theme 'wombat)
-(toggle-frame-maximized)
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
 (setq inhibit-startup-screen t)
 (delete '(vc-mode vc-mode) mode-line-format)
 
