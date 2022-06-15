@@ -348,11 +348,9 @@
   (add-hook 'go-mode-hook #'lsp-mode-install-auto-format-hooks)
   (add-hook 'rust-mode-hook #'lsp-mode-install-auto-format-hooks)
   :custom
-  (lsp-use-plists t)
   (lsp-signature-render-documentation nil)
   (lsp-rust-clippy-preference "on")
-  (lsp-completion-provider :capf)
-  (lsp-kotlin-external-sources-auto-convert-to-kotlin nil))
+  (lsp-completion-provider :capf))
 
 (use-package lsp-pyright
   :straight t
