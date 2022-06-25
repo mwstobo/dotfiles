@@ -344,13 +344,14 @@
   :straight t
   :commands lsp-deferred lsp-format-buffer lsp-organize-imports
   :hook
-  ((python-mode rust-mode typescript-mode js-mode go-mode) . lsp-deferred)
+  ((python-mode rust-mode typescript-mode js-mode go-mode terraform-mode) . lsp-deferred)
   :init
   (defun lsp-mode-install-auto-format-hooks ()
     (add-hook 'before-save-hook #'lsp-format-buffer nil t)
     (add-hook 'before-save-hook #'lsp-organize-imports nil t))
   (add-hook 'go-mode-hook #'lsp-mode-install-auto-format-hooks)
   (add-hook 'rust-mode-hook #'lsp-mode-install-auto-format-hooks)
+  (add-hook 'terraform-mode-hook #'lsp-mode-install-auto-format-hooks)
   :custom
   (lsp-signature-render-documentation nil)
   (lsp-rust-clippy-preference "on")
