@@ -1,7 +1,9 @@
 # ls aliases
 alias ls="ls --color --group-directories-first"
-alias ll="ls -lh"
 alias la="ls -a"
+alias ll="ls -lh"
+alias lla="ll -a"
+alias laa="lla"
 
 # sudo completion
 complete -cf sudo
