@@ -355,6 +355,8 @@
   :custom
   (lsp-signature-render-documentation nil)
   (lsp-rust-clippy-preference "on")
+  (lsp-rust-analyzer-proc-macro-enable t)
+  (lsp-rust-analyzer-experimental-proc-attr-macros t)
   (lsp-completion-provider :capf))
 
 (use-package lsp-pyright
