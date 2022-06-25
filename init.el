@@ -92,6 +92,10 @@
   :init
   (add-hook 'prog-mode-hook #'display-line-numbers-mode))
 
+(use-package auth-source
+  :custom
+  (auth-sources '("secrets:Login")))
+
 ;;; Tree sitter
 (use-package tree-sitter-langs
   :straight t)
