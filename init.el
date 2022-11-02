@@ -361,7 +361,7 @@
   :straight t
   :commands lsp-deferred lsp-format-buffer lsp-organize-imports
   :hook
-  ((python-mode rust-mode typescript-mode js-mode go-mode terraform-mode) . lsp-deferred)
+  ((python-mode rust-mode typescript-mode js-mode go-mode terraform-mode dockerfile-mode tuareg-mode c-mode) . lsp-deferred)
   :init
   (defun lsp-mode-install-auto-format-hooks ()
     (add-hook 'before-save-hook #'lsp-format-buffer nil t)
@@ -369,12 +369,16 @@
   (add-hook 'go-mode-hook #'lsp-mode-install-auto-format-hooks)
   (add-hook 'rust-mode-hook #'lsp-mode-install-auto-format-hooks)
   (add-hook 'terraform-mode-hook #'lsp-mode-install-auto-format-hooks)
+  (add-hook 'tuareg-mode-hook #'lsp-mode-install-auto-format-hooks)
+  (add-hook 'typescript-mode-hook #'(lambda () (add-hook 'before-save-hook #'lsp-format-buffer)))
   :custom
   (lsp-signature-render-documentation nil)
   (lsp-rust-clippy-preference "on")
   (lsp-rust-analyzer-proc-macro-enable t)
   (lsp-rust-analyzer-experimental-proc-attr-macros t)
-  (lsp-completion-provider :capf))
+  (lsp-completion-provider :capf)
+  :config
+  (setq lsp-json--extra-init-params '(:handledSchemaProtocols ["file" "http" "https"])))
 
 (use-package lsp-pyright
   :straight t
