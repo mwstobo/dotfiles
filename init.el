@@ -285,6 +285,15 @@
   (plantuml-default-exec-mode 'executable)
   (plantuml-executable-path "/usr/local/bin/plantuml"))
 
+(use-package nftables-mode
+  :straight t
+  :mode ("/etc/nftables.conf" "\\.nft\\(?:ables\\)?\\'")
+  :interpreter ("nft\\(?:ables\\)?"))
+
+(use-package nginx-mode
+  :straight t
+  :mode ("nginx\\.conf\\'" "/nginx/.+\\.conf\\'"))
+
 ;;; Other useful packages
 (use-package which-key
   :straight t
@@ -337,6 +346,14 @@
   ("M-g e" . avy-goto-word-0)
   :config
   (avy-setup-default))
+
+(use-package npm
+  :straight t)
+
+(use-package prettier
+  :straight t
+  :config
+  (global-prettier-mode))
 
 ;;; Language server packages
 ;;; LSP Mode settings
