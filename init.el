@@ -132,6 +132,17 @@
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
+(use-package corfu
+  :straight t
+  :after orderless
+  :custom
+  (corfu-quit-at-boundary nil)
+  (corfu-quit-no-match t)
+  (corfu-cycle t)
+  (corfu-auto t)
+  :init
+  (global-corfu-mode))
+
 (use-package marginalia
   :straight t
   :init
@@ -305,7 +316,8 @@
 (use-package magit
   :straight t
   :commands magit-status
-  :bind (("C-x g" . magit-status)))
+  :bind (("C-x g" . magit-status)
+         ("C-c v" . magit-status)))
 
 (use-package forge
   :straight t
@@ -338,47 +350,53 @@
   :straight t
   :bind ("C-=" . er/expand-region))
 
-(use-package avy
+(use-package topsy
+  :straight t)
+
+(use-package mwim
   :straight t
   :bind
-  ("C-:" . avy-goto-char)
-  ("C-'" . avy-goto-char-2)
-  ("M-g f" . avy-goto-line)
-  ("M-g w" . avy-goto-word-1)
-  ("M-g e" . avy-goto-word-0)
-  :config
-  (avy-setup-default))
+  ("C-a" . mwim-beginning)
+  ("C-e" . mwim-end))
 
 (use-package npm
   :straight t)
 
 (use-package prettier
   :straight t
-  :config
-  (global-prettier-mode))
+  :init
+  (add-hook 'typescript-ts-mode-hook #'prettier-mode)
+  (add-hook 'js-mode-hook #'prettier-mode)
+  (add-hook 'markdown-mode-hook #'prettier-mode)
+  (add-hook 'yaml-mode-hook #'prettier-mode))
 
 ;;; Language server packages
 ;;; LSP Mode settings
 (use-package lsp-mode
   :straight t
   :commands lsp-deferred lsp-format-buffer lsp-organize-imports
-  :hook
-  ((python-mode rust-mode typescript-mode js-mode go-mode terraform-mode dockerfile-mode tuareg-mode c-mode) . lsp-deferred)
+  :custom
+  (lsp-completion-provider :none)
+  (lsp-signature-render-documentation nil)
+  (lsp-rust-clippy-preference "on")
+  (lsp-rust-analyzer-proc-macro-enable t)
+  (lsp-rust-analyzer-experimental-proc-attr-macros t)
+  (lsp-completion-provider :capf)
   :init
+  (defun lsp-mode-setup-completion ()
+    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+          '(orderless)))
   (defun lsp-mode-install-auto-format-hooks ()
     (add-hook 'before-save-hook #'lsp-format-buffer nil t)
     (add-hook 'before-save-hook #'lsp-organize-imports nil t))
   (add-hook 'go-mode-hook #'lsp-mode-install-auto-format-hooks)
   (add-hook 'rust-mode-hook #'lsp-mode-install-auto-format-hooks)
   (add-hook 'terraform-mode-hook #'lsp-mode-install-auto-format-hooks)
-  (add-hook 'tuareg-mode-hook #'lsp-mode-install-auto-format-hooks)
-  (add-hook 'typescript-mode-hook #'(lambda () (add-hook 'before-save-hook #'lsp-format-buffer)))
-  :custom
-  (lsp-signature-render-documentation nil)
-  (lsp-rust-clippy-preference "on")
-  (lsp-rust-analyzer-proc-macro-enable t)
-  (lsp-rust-analyzer-experimental-proc-attr-macros t)
-  (lsp-completion-provider :capf)
+  (add-hook 'typescript-ts-mode-hook #'(lambda () (add-hook 'before-save-hook #'lsp-format-buffer nil t)))
+  (setq lsp-use-plists 1)
+  :hook
+  ((python-mode rust-mode typescript-ts-mode js-mode go-mode terraform-mode dockerfile-mode tuareg-mode c-mode) . lsp-deferred)
+  (lsp-completion-mode . lsp-mode-setup-completion)
   :config
   (setq lsp-json--extra-init-params '(:handledSchemaProtocols ["file" "http" "https"])))
 
@@ -386,15 +404,15 @@
   :straight t
   :after lsp-mode)
 
-(use-package company
-  :straight t
-  :hook
-  (prog-mode . company-mode)
-  :custom
-  (company-dabbrev-ignore-case 'keep-prefix)
-  (company-dabbrev-downcase nil)
-  (company-idle-delay 0.1)
-  (company-minimum-prefix-length 1))
+;; (use-package company
+;;   :straight t
+;;   :hook
+;;   (prog-mode . company-mode)
+;;   :custom
+;;   (company-dabbrev-ignore-case 'keep-prefix)
+;;   (company-dabbrev-downcase nil)
+;;   (company-idle-delay 0.1)
+;;   (company-minimum-prefix-length 1))
 
 (use-package yasnippet
   :straight t
@@ -413,6 +431,100 @@
                  (side            . bottom)
                  (reusable-frames . visible)
                  (window-height   . 0.33))))
+
+;;; Meow
+(use-package meow
+  :straight t
+  :init
+  (defun meow-setup ()
+    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+    (meow-motion-overwrite-define-key
+     '("j" . meow-next)
+     '("k" . meow-prev)
+     '("<escape>" . ignore))
+    (meow-leader-define-key
+     ;; SPC j/k will run the original command in MOTION state.
+     '("j" . "H-j")
+     '("k" . "H-k")
+     ;; Use SPC (0-9) for digit arguments.
+     '("1" . meow-digit-argument)
+     '("2" . meow-digit-argument)
+     '("3" . meow-digit-argument)
+     '("4" . meow-digit-argument)
+     '("5" . meow-digit-argument)
+     '("6" . meow-digit-argument)
+     '("7" . meow-digit-argument)
+     '("8" . meow-digit-argument)
+     '("9" . meow-digit-argument)
+     '("0" . meow-digit-argument)
+     '("/" . meow-keypad-describe-key)
+     '("?" . meow-cheatsheet))
+    (meow-normal-define-key
+     '("0" . meow-expand-0)
+     '("9" . meow-expand-9)
+     '("8" . meow-expand-8)
+     '("7" . meow-expand-7)
+     '("6" . meow-expand-6)
+     '("5" . meow-expand-5)
+     '("4" . meow-expand-4)
+     '("3" . meow-expand-3)
+     '("2" . meow-expand-2)
+     '("1" . meow-expand-1)
+     '("-" . negative-argument)
+     '(";" . meow-reverse)
+     '("," . meow-inner-of-thing)
+     '("." . meow-bounds-of-thing)
+     '("[" . meow-beginning-of-thing)
+     '("]" . meow-end-of-thing)
+     '("a" . meow-append)
+     '("A" . meow-open-below)
+     '("b" . meow-back-word)
+     '("B" . meow-back-symbol)
+     '("c" . meow-change)
+     '("d" . meow-delete)
+     '("D" . meow-backward-delete)
+     '("e" . meow-next-word)
+     '("E" . meow-next-symbol)
+     '("f" . meow-find)
+     '("g" . meow-cancel-selection)
+     '("G" . meow-grab)
+     '("h" . meow-left)
+     '("H" . meow-left-expand)
+     '("i" . meow-insert)
+     '("I" . meow-open-above)
+     '("j" . meow-next)
+     '("J" . meow-next-expand)
+     '("k" . meow-prev)
+     '("K" . meow-prev-expand)
+     '("l" . meow-right)
+     '("L" . meow-right-expand)
+     '("m" . meow-join)
+     '("n" . meow-search)
+     '("o" . meow-block)
+     '("O" . meow-to-block)
+     '("p" . meow-yank)
+     '("q" . meow-quit)
+     '("Q" . meow-goto-line)
+     '("r" . meow-replace)
+     '("R" . meow-swap-grab)
+     '("s" . meow-kill)
+     '("t" . meow-till)
+     '("u" . meow-undo)
+     '("U" . meow-undo-in-selection)
+     '("v" . meow-visit)
+     '("w" . meow-mark-word)
+     '("W" . meow-mark-symbol)
+     '("x" . meow-line)
+     '("X" . meow-goto-line)
+     '("y" . meow-save)
+     '("Y" . meow-sync-grab)
+     '("z" . meow-pop-selection)
+     '("'" . repeat)
+     '("<escape>" . ignore)))
+  :config
+  (meow-setup)
+  (meow-global-mode)
+  (meow-setup-indicator))
 
 ;;; Local config
 (if (file-readable-p "~/.emacs.d/init-local.el")
