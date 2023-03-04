@@ -244,7 +244,9 @@
 
 (use-package terraform-mode
   :straight t
-  :mode "\\.tf\\(vars\\)?\\'")
+  :mode "\\.tf\\(vars\\)?\\'"
+  :init
+  (add-hook 'terraform-mode-hook #'(lambda () (setq create-lockfiles nil))))
 
 (use-package dockerfile-mode
   :straight t
