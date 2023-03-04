@@ -390,16 +390,6 @@
   :straight t
   :after lsp-mode)
 
-;; (use-package company
-;;   :straight t
-;;   :hook
-;;   (prog-mode . company-mode)
-;;   :custom
-;;   (company-dabbrev-ignore-case 'keep-prefix)
-;;   (company-dabbrev-downcase nil)
-;;   (company-idle-delay 0.1)
-;;   (company-minimum-prefix-length 1))
-
 (use-package yasnippet
   :straight t
   :hook
