@@ -36,6 +36,9 @@
 (setq gc-cons-threshold 200000000)           ; Performance tuning
 (setq read-process-output-max (* 1024 1024)) ; Performance tuning
 
+;;; Tree sitter
+(setq treesit-extra-load-path '("~/.emacs.d/tree-sitter/dist"))
+
 ;;; Setting up package and use-package
 (straight-use-package 'use-package)
 (require 'use-package)
@@ -95,20 +98,6 @@
 (use-package auth-source
   :custom
   (auth-sources '("secrets:Login")))
-
-;;; Tree sitter
-(use-package tree-sitter-langs
-  :straight t)
-
-(use-package tree-sitter
-  :after tree-sitter-langs
-  :straight t
-  :init
-  (dolist
-      (hook-symbol
-       (list 'go-mode-hook 'rust-mode-hook 'js-mode-hook 'python-mode-hook))
-    (add-hook hook-symbol #'tree-sitter-mode))
-  (add-hook 'tree-sitter-mode-hook #'tree-sitter-hl-mode))
 
 ;;; Vertico
 (use-package vertico
@@ -275,11 +264,8 @@
   :straight t
   :mode ("\\.sql\\'" . sqlind-minor-mode))
 
-(use-package typescript-mode
-  :straight t
-  :mode "\\.tsx?\\'"
-  :custom
-  (typescript-indent-level 2))
+(use-package typescript-ts-mode
+  :mode "\\.tsx?\\'")
 
 (use-package markdown-mode
   :straight t
