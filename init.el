@@ -97,7 +97,7 @@
 
 (use-package auth-source
   :custom
-  (auth-sources '("secrets:Login")))
+  (auth-sources '("secrets:Default keyring" "secrets:Login")))
 
 ;;; Vertico
 (use-package vertico
