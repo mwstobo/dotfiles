@@ -136,6 +136,14 @@
   :after corfu
   :hook (corfu-mode . corfu-popupinfo-mode))
 
+(use-package kind-icon
+  :straight t
+  :after corfu
+  :custom
+  (kind-icon-default-face 'corfu-default)
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
 (use-package marginalia
   :straight t
   :init
