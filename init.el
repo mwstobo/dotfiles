@@ -122,7 +122,7 @@
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
 (use-package corfu
-  :straight t
+  :straight (:files (:defaults "extensions/*"))
   :after orderless
   :custom
   (corfu-quit-at-boundary nil)
@@ -131,6 +131,10 @@
   (corfu-auto t)
   :init
   (global-corfu-mode))
+
+(use-package corfu-popupinfo
+  :after corfu
+  :hook (corfu-mode . corfu-popupinfo-mode))
 
 (use-package marginalia
   :straight t
