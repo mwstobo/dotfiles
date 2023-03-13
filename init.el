@@ -153,6 +153,10 @@
 (use-package org
   :mode ("\\.org\\'" . org-mode)
   :custom
+  (org-hide-emphasis-markers t)
+  (org-pretty-entities t)
+  (org-startup-indented t)
+  (org-hide-leading-stars t)
   (org-export-with-toc nil)
   (org-agenda-files '("~/.emacs.d/gtd/gtd.org" "~/.emacs.d/gtd/inbox.org"))
   (org-todo-keywords '("TODO(t)" "NEXT(n)" "|" "WAITING(w)" "DONE(d)")))
