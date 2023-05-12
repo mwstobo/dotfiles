@@ -211,6 +211,11 @@
         ((org-agenda-overriding-header "Next simple tasks: "))))
       ((org-agenda-prefix-format "%(car (last (org-get-outline-path))): "))))))
 
+(use-package verb
+  :straight t
+  :after org
+  :config (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
+
 ;;; Installed major modes
 (use-package prog-mode
   :init
@@ -310,6 +315,10 @@
   :straight t
   :mode ("nginx\\.conf\\'" "/nginx/.+\\.conf\\'"))
 
+(use-package prisma-mode
+  :straight (prisma-mode :type git :host github :repo "pimeys/emacs-prisma-mode")
+  :mode ("\\.prisma$"))
+
 ;;; Other useful packages
 (use-package which-key
   :straight t
@@ -385,6 +394,7 @@
   (lsp-rust-analyzer-proc-macro-enable t)
   (lsp-rust-analyzer-experimental-proc-attr-macros t)
   (lsp-completion-provider :capf)
+  (lsp-auto-execute-action nil)
   :init
   (defun lsp-mode-setup-completion ()
     (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
@@ -395,7 +405,7 @@
   (add-hook 'go-mode-hook #'lsp-mode-install-auto-format-hooks)
   (add-hook 'rust-mode-hook #'lsp-mode-install-auto-format-hooks)
   (add-hook 'terraform-mode-hook #'lsp-mode-install-auto-format-hooks)
-  (add-hook 'typescript-ts-mode-hook #'(lambda () (add-hook 'before-save-hook #'lsp-format-buffer nil t)))
+  (add-hook 'prisma-mode-hook #'(lambda () (add-hook 'before-save-hook #'lsp-format-buffer nil t)))
   (setq lsp-use-plists 1)
   :hook
   ((python-mode rust-mode typescript-ts-mode js-mode go-mode terraform-mode dockerfile-mode tuareg-mode c-mode) . lsp-deferred)
