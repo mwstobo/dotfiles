@@ -433,7 +433,9 @@
                   display-buffer-in-side-window)
                  (side            . bottom)
                  (reusable-frames . visible)
-                 (window-height   . 0.33))))
+                 (window-height   . 0.33)))
+  :custom
+  (flycheck-emacs-lisp-load-path 'inherit))
 
 ;;; Meow
 (use-package meow
