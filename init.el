@@ -158,58 +158,12 @@
   (org-pretty-entities t)
   (org-startup-indented t)
   (org-hide-leading-stars t)
-  (org-export-with-toc nil)
-  (org-agenda-files '("~/.emacs.d/gtd/gtd.org" "~/.emacs.d/gtd/inbox.org"))
+  (org-export-with-toc)
+  (org-agenda-files (directory-files-recursively "~/org" "\\.org$"))
   (org-todo-keywords '("TODO(t)" "NEXT(n)" "|" "WAITING(w)" "DONE(d)")))
 
-(use-package org-capture
-  :bind
-  ("C-c c" . org-capture)
-  ("C-c i" . org-capture-inbox)
-  :config
-  (defun org-capture-inbox ()
-    (interactive)
-    (org-capture nil "i"))
-  :custom
-  (org-capture-bookmark nil)
-  (org-capture-templates
-   '(("i" "Inbox" entry (file "~/.emacs.d/gtd/inbox.org") "* TODO %?\nCaptured on %U"))))
-
-(use-package org-refile
-  :after org
-  :custom
-  (org-refile-targets '(("~/.emacs.d/gtd/gtd.org" :level . 1))))
-
 (use-package org-agenda
-  :bind ("C-c a" . org-agenda)
-  :init
-  (defun org-gtd-distance-to-header ()
-    (save-excursion
-      (push-mark)
-      (org-up-element)
-      (count-lines (point) (mark))))
-  (defun org-gtd-skip-all-but-next ()
-    (if (eq (org-gtd-distance-to-header) 1) nil (outline-next-heading)))
-  :custom
-  (org-agenda-hide-tags-regexp ".")
-  (org-agenda-custom-commands
-   '(("g" "GTD"
-      ((agenda "")
-       (todo
-        "NEXT"
-        ((org-agenda-overriding-header "Tasks")))
-       (tags-todo
-        "inbox"
-        ((org-agenda-overriding-header "Inbox")))))
-     ("n" "Next"
-      ((tags-todo
-        "projects"
-        ((org-agenda-overriding-header "Next tasks for projects: ")
-         (org-agenda-skip-function #'org-gtd-skip-all-but-next)))
-       (tags-todo
-        "simple"
-        ((org-agenda-overriding-header "Next simple tasks: "))))
-      ((org-agenda-prefix-format "%(car (last (org-get-outline-path))): "))))))
+  :bind ("C-c a" . org-agenda))
 
 (use-package verb
   :straight t
