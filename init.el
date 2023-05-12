@@ -532,8 +532,8 @@
   (meow-setup-indicator))
 
 ;;; Local config
-(if (file-readable-p "~/.emacs.d/init-local.el")
-    (load "~/.emacs.d/init-local.el"))
+(use-package init-local
+  :if (locate-library "init-local.el"))
 
 (provide 'init)
 ;;; init.el ends here
