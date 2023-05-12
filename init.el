@@ -79,7 +79,8 @@
 
 (use-package paren
   :custom
-  (show-paren-style 'mixed)
+  (show-paren-style 'parenthesis)
+  (show-paren-context-when-offscreen t)
   :config
   (show-paren-mode))
 
