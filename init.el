@@ -174,12 +174,6 @@
   :config (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
 
 ;;; Installed major modes
-(use-package prog-mode
-  :init
-  (defun set-show-trailing-whitespace ()
-    (setq show-trailing-whitespace t))
-  (add-hook 'prog-mode-hook #'set-show-trailing-whitespace))
-
 (use-package js
   :custom
   (js-indent-level 2))
