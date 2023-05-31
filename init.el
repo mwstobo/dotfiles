@@ -75,7 +75,8 @@
   (delete-old-versions t)
   (kept-old-versions 2)
   (kept-new-versions 6)
-  (backup-by-copying t))
+  (backup-by-copying t)
+  (require-final-newline t))
 
 (use-package paren
   :custom
