@@ -48,7 +48,7 @@
 
 ;;; Init file access
 (defun my-find-init-file ()
-  "Open the 'user-init-file'."
+  "Open the \"user-init-file\"."
   (interactive)
   (let ((vc-follow-symlinks t))
     (find-file user-init-file)))
