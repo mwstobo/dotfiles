@@ -15,6 +15,8 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
+;;; Init load path
+(add-to-list 'load-path (expand-file-name "init/" user-emacs-directory))
 
 ;;; Configuration from the simple package
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
