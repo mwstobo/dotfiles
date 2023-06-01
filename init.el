@@ -89,6 +89,7 @@
 (use-package auth-source
   :custom
   (auth-sources '("secrets:Default keyring" "secrets:Login")))
+
 (use-package vc-hooks
   :custom
   (vc-handled-backends (remove 'Git vc-handled-backends)))
