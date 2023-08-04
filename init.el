@@ -78,10 +78,6 @@
   :config
   (show-paren-mode))
 
-(use-package elec-pair
-  :config
-  (electric-pair-mode))
-
 (use-package compile
   :custom
   (compilation-scroll-output 'first-error))
@@ -269,10 +265,6 @@
   :straight t
   :mode ("nginx\\.conf\\'" "/nginx/.+\\.conf\\'"))
 
-(use-package prisma-mode
-  :straight (prisma-mode :type git :host github :repo "pimeys/emacs-prisma-mode")
-  :mode ("\\.prisma$"))
-
 (use-package jinja2-mode
   :straight t
   :mode ("\\.jinja2\\'" "\\.j2\\'"))
@@ -315,10 +307,6 @@
   (olivetti-mode-off-hook
    #'(lambda ()
        (setq line-spacing olivetti--line-spacing))))
-
-(use-package expand-region
-  :straight t
-  :bind ("C-=" . er/expand-region))
 
 (use-package topsy
   :straight t)
