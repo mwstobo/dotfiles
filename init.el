@@ -6,10 +6,8 @@
 (add-to-list 'load-path (expand-file-name "init/" user-emacs-directory))
 
 ;;; elpaca
-(require 'init-elpaca)
-(elpaca elpaca-use-package
-  (elpaca-use-package-mode))
-(elpaca-wait)
+(require 'init-straight)
+(straight-use-package 'use-package)
 
 ;;; Configuration from the simple package
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
@@ -35,6 +33,12 @@
 
 ;;; Setting up custom
 (setq custom-file "~/.emacs.d/custom.el") ; Set, but don't load
+
+;;; Movement control
+(global-set-key (kbd "M-e") #'forward-word)
+
+(use-package misc
+  :bind ("M-f" . forward-to-word))
 
 ;;; Init file access
 (defun my-find-init-file ()
@@ -88,15 +92,22 @@
 
 (use-package auth-source
   :custom
-  (auth-sources '("secrets:Default keyring" "secrets:Login")))
+  (auth-sources '(macos-keychain-internet)))
 
-(use-package vc-hooks
-  :custom
-  (vc-handled-backends (remove 'Git vc-handled-backends)))
+(use-package avy
+  :straight t
+  :bind ("M-n" . avy-goto-char-timer))
+
+(use-package consult
+  :straight t
+  :bind (("C-x b" . consult-buffer)
+         ("C-x 4 b" . consult-buffer-other-window)
+         ("C-x 5 b" . consult-buffer-other-frame)
+         ("C-x p b" . consult-project-buffer)))
 
 ;;; Vertico
 (use-package vertico
-  :elpaca (:files (:defaults "extensions/*"))
+  :straight (:files (:defaults "extensions/*"))
   :init
   (vertico-mode)
   :custom
@@ -111,13 +122,13 @@
         ("M-DEL" . vertico-directory-delete-word)))
 
 (use-package orderless
-  :elpaca t
+  :straight t
   :custom
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
 (use-package corfu
-  :elpaca (:files (:defaults "extensions/*"))
+  :straight (:files (:defaults "extensions/*"))
   :after orderless
   :custom
   (corfu-quit-at-boundary nil)
@@ -132,7 +143,7 @@
   :hook (corfu-mode . corfu-popupinfo-mode))
 
 (use-package kind-icon
-  :elpaca t
+  :straight t
   :after corfu
   :custom
   (kind-icon-default-face 'corfu-default)
@@ -140,7 +151,7 @@
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package marginalia
-  :elpaca t
+  :straight t
   :init
   (marginalia-mode))
 
@@ -160,7 +171,7 @@
   :bind ("C-c a" . org-agenda))
 
 (use-package verb
-  :elpaca t
+  :straight t
   :after org
   :config (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
 
@@ -174,118 +185,123 @@
   (add-hook 'text-mode-hook #'flyspell-mode)
   (add-hook 'text-mode-hook #'visual-line-mode))
 
-(use-package go-mode
-  :elpaca t
+(use-package go-ts-mode
   :mode "\\.go\\'"
   :init
-  (add-hook 'go-mode-hook (setq indent-tabs-mode t)))
+  (add-hook 'go-mode-hook (setq indent-tabs-mode t))
+  :custom
+  (go-ts-mode-indent-offset 4))
 
 (use-package rust-mode
-  :elpaca t
+  :straight t
   :mode "\\.rs\\'")
 
 (use-package tuareg
-  :elpaca t
+  :straight t
   :mode
   ("\\.ml[ip]?\\'" . tuareg-mode)
   ("\\.opam\\'" . tuareg-opam-mode))
 
 (use-package dune
   :mode ("\\(?:\\`\\|/\\)dune\\(?:\\.inc\\|\\-project\\)?\\'" . dune-mode)
-  :elpaca t)
+  :straight t)
 
 (use-package kotlin-mode
-  :elpaca t
+  :straight t
   :mode "\\.kts?\\'")
 
 (use-package pkgbuild-mode
-  :elpaca t
+  :straight t
   :mode "/PKGBUILD\\'")
 
 (use-package docker-compose-mode
-  :elpaca t
+  :straight t
   :mode "docker-compose[^/]*\\.ya?ml\\'")
 
 (use-package terraform-mode
-  :elpaca t
+  :straight t
   :mode "\\.tf\\(vars\\)?\\'"
   :init
   (add-hook 'terraform-mode-hook #'(lambda () (setq create-lockfiles nil))))
 
 (use-package dockerfile-mode
-  :elpaca t
+  :straight t
   :mode "Dockerfile\\'")
 
 (use-package json-mode
-  :elpaca t
+  :straight t
   :mode "\\.json\\'")
 
 (use-package graphql-mode
-  :elpaca t
+  :straight t
   :mode "\\.\\(graphql\\|gql\\)\\'")
 
 (use-package sql-indent
-  :elpaca t
+  :straight t
   :mode ("\\.sql\\'" . sqlind-minor-mode))
 
 (use-package typescript-ts-mode
   :mode "\\.tsx?\\'")
 
 (use-package markdown-mode
-  :elpaca t
+  :straight t
   :mode ("README\\.md\\'" . gfm-mode)
   :custom
   (markdown-command "markdown"))
 
 (use-package protobuf-mode
-  :elpaca t
+  :straight t
   :mode ("\\.proto\\'"))
 
 (use-package plantuml-mode
-  :elpaca t
+  :straight t
   :mode ("\\.\\(plantuml\\|pum\\|plu\\)\\'")
   :custom
   (plantuml-default-exec-mode 'executable)
   (plantuml-executable-path "/usr/local/bin/plantuml"))
 
 (use-package nftables-mode
-  :elpaca t
+  :straight t
   :mode ("/etc/nftables.conf" "\\.nft\\(?:ables\\)?\\'")
   :interpreter ("nft\\(?:ables\\)?"))
 
 (use-package nginx-mode
-  :elpaca t
+  :straight t
   :mode ("nginx\\.conf\\'" "/nginx/.+\\.conf\\'"))
 
 (use-package prisma-mode
-  :elpaca (prisma-mode :type git :host github :repo "pimeys/emacs-prisma-mode")
+  :straight (prisma-mode :type git :host github :repo "pimeys/emacs-prisma-mode")
   :mode ("\\.prisma$"))
+
+(use-package jinja2-mode
+  :straight t
+  :mode ("\\.jinja2\\'" "\\.j2\\'"))
 
 ;;; Other useful packages
 (use-package which-key
-  :elpaca t
+  :straight t
   :config
   (which-key-mode))
 
 (use-package magit
-  :elpaca t
+  :straight t
   :commands magit-status
   :bind (("C-x g" . magit-status)
          ("C-c v" . magit-status)))
 
 (use-package forge
-  :elpaca t
+  :straight t
   :after magit)
 
 (use-package git-link
-  :elpaca t
+  :straight t
   :commands git-link git-link-commit)
 
 (use-package all-the-icons
-  :elpaca t)
+  :straight t)
 
 (use-package olivetti
-  :elpaca t
+  :straight t
   :commands
   (olivetti-mode)
   :init
@@ -301,23 +317,23 @@
        (setq line-spacing olivetti--line-spacing))))
 
 (use-package expand-region
-  :elpaca t
+  :straight t
   :bind ("C-=" . er/expand-region))
 
 (use-package topsy
-  :elpaca t)
+  :straight t)
 
 (use-package mwim
-  :elpaca t
+  :straight t
   :bind
   ("C-a" . mwim-beginning)
   ("C-e" . mwim-end))
 
 (use-package npm
-  :elpaca t)
+  :straight t)
 
 (use-package prettier
-  :elpaca t
+  :straight t
   :init
   (add-hook 'typescript-ts-mode-hook #'prettier-mode)
   (add-hook 'js-mode-hook #'prettier-mode)
@@ -327,7 +343,7 @@
 ;;; Language server packages
 ;;; LSP Mode settings
 (use-package lsp-mode
-  :elpaca t
+  :straight t
   :commands lsp-deferred lsp-format-buffer lsp-organize-imports
   :custom
   (lsp-completion-provider :none)
@@ -344,28 +360,28 @@
   (defun lsp-mode-install-auto-format-hooks ()
     (add-hook 'before-save-hook #'lsp-format-buffer nil t)
     (add-hook 'before-save-hook #'lsp-organize-imports nil t))
-  (add-hook 'go-mode-hook #'lsp-mode-install-auto-format-hooks)
+  (add-hook 'go-ts-mode-hook #'lsp-mode-install-auto-format-hooks)
   (add-hook 'rust-mode-hook #'lsp-mode-install-auto-format-hooks)
   (add-hook 'terraform-mode-hook #'lsp-mode-install-auto-format-hooks)
   (add-hook 'prisma-mode-hook #'(lambda () (add-hook 'before-save-hook #'lsp-format-buffer nil t)))
   (setq lsp-use-plists 1)
   :hook
-  ((python-mode rust-mode typescript-ts-mode js-mode go-mode terraform-mode dockerfile-mode tuareg-mode c-mode) . lsp-deferred)
+  ((python-mode rust-mode typescript-ts-mode js-mode go-ts-mode terraform-mode dockerfile-mode tuareg-mode c-mode) . lsp-deferred)
   (lsp-completion-mode . lsp-mode-setup-completion)
   :config
   (setq lsp-json--extra-init-params '(:handledSchemaProtocols ["file" "http" "https"])))
 
 (use-package lsp-pyright
-  :elpaca t
+  :straight t
   :after lsp-mode)
 
 (use-package yasnippet
-  :elpaca t
+  :straight t
   :hook
   ((lsp-mode eglot-mode-hook) . yas-minor-mode))
 
 (use-package flycheck
-  :elpaca t
+  :straight t
   :hook
   (prog-mode . flycheck-mode)
   :init
@@ -379,105 +395,9 @@
   :custom
   (flycheck-emacs-lisp-load-path 'inherit))
 
-;;; Meow
-(use-package meow
-  :elpaca t
-  :init
-  (defun meow-setup ()
-    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-    (meow-motion-overwrite-define-key
-     '("j" . meow-next)
-     '("k" . meow-prev)
-     '("<escape>" . ignore))
-    (meow-leader-define-key
-     ;; SPC j/k will run the original command in MOTION state.
-     '("j" . "H-j")
-     '("k" . "H-k")
-     ;; Use SPC (0-9) for digit arguments.
-     '("1" . meow-digit-argument)
-     '("2" . meow-digit-argument)
-     '("3" . meow-digit-argument)
-     '("4" . meow-digit-argument)
-     '("5" . meow-digit-argument)
-     '("6" . meow-digit-argument)
-     '("7" . meow-digit-argument)
-     '("8" . meow-digit-argument)
-     '("9" . meow-digit-argument)
-     '("0" . meow-digit-argument)
-     '("/" . meow-keypad-describe-key)
-     '("?" . meow-cheatsheet))
-    (meow-normal-define-key
-     '("0" . meow-expand-0)
-     '("9" . meow-expand-9)
-     '("8" . meow-expand-8)
-     '("7" . meow-expand-7)
-     '("6" . meow-expand-6)
-     '("5" . meow-expand-5)
-     '("4" . meow-expand-4)
-     '("3" . meow-expand-3)
-     '("2" . meow-expand-2)
-     '("1" . meow-expand-1)
-     '("-" . negative-argument)
-     '(";" . meow-reverse)
-     '("," . meow-inner-of-thing)
-     '("." . meow-bounds-of-thing)
-     '("[" . meow-beginning-of-thing)
-     '("]" . meow-end-of-thing)
-     '("a" . meow-append)
-     '("A" . meow-open-below)
-     '("b" . meow-back-word)
-     '("B" . meow-back-symbol)
-     '("c" . meow-change)
-     '("d" . meow-delete)
-     '("D" . meow-backward-delete)
-     '("e" . meow-next-word)
-     '("E" . meow-next-symbol)
-     '("f" . meow-find)
-     '("g" . meow-cancel-selection)
-     '("G" . meow-grab)
-     '("h" . meow-left)
-     '("H" . meow-left-expand)
-     '("i" . meow-insert)
-     '("I" . meow-open-above)
-     '("j" . meow-next)
-     '("J" . meow-next-expand)
-     '("k" . meow-prev)
-     '("K" . meow-prev-expand)
-     '("l" . meow-right)
-     '("L" . meow-right-expand)
-     '("m" . meow-join)
-     '("n" . meow-search)
-     '("o" . meow-block)
-     '("O" . meow-to-block)
-     '("p" . meow-yank)
-     '("q" . meow-quit)
-     '("Q" . meow-goto-line)
-     '("r" . meow-replace)
-     '("R" . meow-swap-grab)
-     '("s" . meow-kill)
-     '("t" . meow-till)
-     '("u" . meow-undo)
-     '("U" . meow-undo-in-selection)
-     '("v" . meow-visit)
-     '("w" . meow-mark-word)
-     '("W" . meow-mark-symbol)
-     '("x" . meow-line)
-     '("X" . meow-goto-line)
-     '("y" . meow-save)
-     '("Y" . meow-sync-grab)
-     '("z" . meow-pop-selection)
-     '("'" . repeat)
-     '("<escape>" . ignore)))
-  :config
-  (meow-setup)
-  (meow-global-mode)
-  (meow-setup-indicator))
-
 ;;; Local config
 (use-package init-local
   :if (locate-library "init-local.el"))
-
-(elpaca-wait)
 
 (provide 'init)
 ;;; init.el ends here
