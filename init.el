@@ -88,7 +88,7 @@
 
 (use-package auth-source
   :custom
-  (auth-sources '("secrets:Default keyring" "secrets:Login")))
+  (auth-sources '(macos-keychain-internet)))
 
 (use-package avy
   :straight t
@@ -188,8 +188,7 @@
   :custom
   (go-ts-mode-indent-offset 4))
 
-(use-package rust-mode
-  :straight t
+(use-package rust-ts-mode
   :mode "\\.rs\\'")
 
 (use-package tuareg
@@ -328,60 +327,15 @@
   (add-hook 'markdown-mode-hook #'prettier-mode)
   (add-hook 'yaml-mode-hook #'prettier-mode))
 
-;;; Language server packages
-;;; LSP Mode settings
-(use-package lsp-mode
+(use-package flymake-eslint
   :straight t
-  :commands lsp-deferred lsp-format-buffer lsp-organize-imports
-  :custom
-  (lsp-completion-provider :none)
-  (lsp-signature-render-documentation nil)
-  (lsp-rust-clippy-preference "on")
-  (lsp-rust-analyzer-proc-macro-enable t)
-  (lsp-rust-analyzer-experimental-proc-attr-macros t)
-  (lsp-completion-provider :capf)
-  (lsp-auto-execute-action nil)
   :init
-  (defun lsp-mode-setup-completion ()
-    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-          '(orderless)))
-  (defun lsp-mode-install-auto-format-hooks ()
-    (add-hook 'before-save-hook #'lsp-format-buffer nil t)
-    (add-hook 'before-save-hook #'lsp-organize-imports nil t))
-  (add-hook 'go-ts-mode-hook #'lsp-mode-install-auto-format-hooks)
-  (add-hook 'rust-mode-hook #'lsp-mode-install-auto-format-hooks)
-  (add-hook 'terraform-mode-hook #'lsp-mode-install-auto-format-hooks)
-  (add-hook 'prisma-mode-hook #'(lambda () (add-hook 'before-save-hook #'lsp-format-buffer nil t)))
-  (setq lsp-use-plists 1)
-  :hook
-  ((python-mode rust-mode typescript-ts-mode js-mode go-ts-mode terraform-mode dockerfile-mode tuareg-mode c-mode) . lsp-deferred)
-  (lsp-completion-mode . lsp-mode-setup-completion)
-  :config
-  (setq lsp-json--extra-init-params '(:handledSchemaProtocols ["file" "http" "https"])))
-
-(use-package lsp-pyright
-  :straight t
-  :after lsp-mode)
+  (add-hook 'typescript-ts-mode-hook #'flymake-eslint-enable))
 
 (use-package yasnippet
   :straight t
-  :hook
-  ((lsp-mode eglot-mode-hook) . yas-minor-mode))
-
-(use-package flycheck
-  :straight t
-  :hook
-  (prog-mode . flycheck-mode)
-  :init
-  (add-to-list 'display-buffer-alist
-               `(,(rx bos "*Flycheck errors*" eos)
-                 (display-buffer-reuse-window
-                  display-buffer-in-side-window)
-                 (side            . bottom)
-                 (reusable-frames . visible)
-                 (window-height   . 0.33)))
-  :custom
-  (flycheck-emacs-lisp-load-path 'inherit))
+  :config
+  (yas-global-mode))
 
 ;;; Local config
 (use-package init-local
