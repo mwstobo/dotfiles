@@ -104,6 +104,7 @@
 ;;; Vertico
 (use-package vertico
   :straight (:files (:defaults "extensions/*"))
+  :commands vertico-mode
   :init
   (vertico-mode)
   :custom
@@ -126,6 +127,7 @@
 (use-package corfu
   :straight (:files (:defaults "extensions/*"))
   :after orderless
+  :commands global-corfu-mode
   :custom
   (corfu-quit-at-boundary nil)
   (corfu-quit-no-match t)
@@ -141,6 +143,7 @@
 (use-package kind-icon
   :straight t
   :after corfu
+  :commands kind-icon-margin-formatter
   :custom
   (kind-icon-default-face 'corfu-default)
   :config
@@ -148,6 +151,7 @@
 
 (use-package marginalia
   :straight t
+  :commands marginalia-mode
   :init
   (marginalia-mode))
 
@@ -172,6 +176,14 @@
   :config (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
 
 ;;; Installed major modes
+(use-package prog-mode
+  :init
+  (add-hook 'prog-mode-hook #'flymake-mode))
+
+(use-package elisp-mode
+  :init
+  (setq elisp-flymake-byte-compile-load-path load-path))
+
 (use-package js
   :custom
   (js-indent-level 2))
@@ -271,6 +283,7 @@
 ;;; Other useful packages
 (use-package which-key
   :straight t
+  :commands which-key-mode
   :config
   (which-key-mode))
 
@@ -293,8 +306,7 @@
 
 (use-package olivetti
   :straight t
-  :commands
-  (olivetti-mode)
+  :commands olivetti-mode
   :init
   (defvar olivetti--line-spacing nil)
   :custom
@@ -321,6 +333,7 @@
 
 (use-package prettier
   :straight t
+  :commands prettier-mode
   :init
   (add-hook 'typescript-ts-mode-hook #'prettier-mode)
   (add-hook 'js-mode-hook #'prettier-mode)
@@ -329,11 +342,13 @@
 
 (use-package flymake-eslint
   :straight t
+  :commands flymake-eslint-enable
   :init
   (add-hook 'typescript-ts-mode-hook #'flymake-eslint-enable))
 
 (use-package yasnippet
   :straight t
+  :commands yas-global-mode
   :config
   (yas-global-mode))
 
