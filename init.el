@@ -162,7 +162,7 @@
   :commands kind-icon-margin-formatter
   :custom
   (kind-icon-default-face 'corfu-default)
-  :config
+  :init
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package marginalia
@@ -291,7 +291,7 @@
 (use-package which-key
   :straight t
   :commands which-key-mode
-  :config
+  :init
   (which-key-mode))
 
 (use-package magit
@@ -356,7 +356,7 @@
 (use-package yasnippet
   :straight t
   :commands yas-reload-all yas-minor-mode
-  :config
+  :init
   (yas-reload-all)
   (add-hook 'prog-mode-hook #'yas-minor-mode))
 
