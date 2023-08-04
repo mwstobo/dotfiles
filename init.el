@@ -352,6 +352,14 @@
   :config
   (yas-global-mode))
 
+(defun eglot-format-buffer-on-save ()
+  "Use eglot to autoformat after save."
+  (add-hook 'before-save-hook #'eglot-format-buffer))
+(use-package eglot
+  :commands eglot-format-buffer
+  :init
+  (add-hook 'eglot-managed-mode-hook #'eglot-format-buffer-on-save))
+
 ;;; Local config
 (use-package init-local
   :if (locate-library "init-local.el"))
