@@ -92,7 +92,7 @@
 
 (use-package auth-source
   :custom
-  (auth-sources '(macos-keychain-internet)))
+  (auth-sources '("secrets:Default keyring" "secrets:Login")))
 
 (use-package avy
   :straight t
