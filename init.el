@@ -100,7 +100,9 @@
 
 (use-package auth-source
   :custom
-  (auth-sources '(macos-keychain-internet)))
+  (auth-sources (if (string= system-type "darwin")
+                    '(macos-keychain-internet)
+                  '("secrets:Default keyring" "secrets:Login"))))
 
 (use-package avy
   :straight t
