@@ -348,9 +348,10 @@
 
 (use-package yasnippet
   :straight t
-  :commands yas-global-mode
+  :commands yas-reload-all yas-minor-mode
   :config
-  (yas-global-mode))
+  (yas-reload-all)
+  (add-hook 'prog-mode-hook #'yas-minor-mode))
 
 (defun eglot-format-buffer-on-save ()
   "Use eglot to autoformat after save."
