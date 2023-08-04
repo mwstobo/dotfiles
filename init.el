@@ -86,6 +86,18 @@
   :init
   (add-hook 'prog-mode-hook #'display-line-numbers-mode))
 
+(use-package flymake
+  :init
+  (add-hook 'prog-mode-hook #'flymake-mode))
+
+(use-package flyspell
+  :init
+  (add-hook 'text-mode-hook #'flyspell-mode))
+
+(use-package simple
+  :init
+  (add-hook 'text-mode-hook #'visual-line-mode))
+
 (use-package auth-source
   :custom
   (auth-sources '(macos-keychain-internet)))
@@ -138,7 +150,9 @@
 
 (use-package corfu-popupinfo
   :after corfu
-  :hook (corfu-mode . corfu-popupinfo-mode))
+  :commands corfu-popupinfo-mode
+  :init
+  (add-hook 'corfu-mode-hook #'corfu-popupinfo-mode))
 
 (use-package kind-icon
   :straight t
@@ -176,10 +190,6 @@
   :config (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
 
 ;;; Installed major modes
-(use-package prog-mode
-  :init
-  (add-hook 'prog-mode-hook #'flymake-mode))
-
 (use-package elisp-mode
   :init
   (setq elisp-flymake-byte-compile-load-path load-path))
@@ -187,11 +197,6 @@
 (use-package js
   :custom
   (js-indent-level 2))
-
-(use-package text-mode
-  :init
-  (add-hook 'text-mode-hook #'flyspell-mode)
-  (add-hook 'text-mode-hook #'visual-line-mode))
 
 (use-package go-ts-mode
   :mode "\\.go\\'"
