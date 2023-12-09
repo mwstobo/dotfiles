@@ -5,9 +5,8 @@
 ;;; Init load path
 (add-to-list 'load-path (expand-file-name "init/" user-emacs-directory))
 
-;;; elpaca
+;;; straight
 (require 'init-straight)
-(straight-use-package 'use-package)
 
 ;;; Configuration from the simple package
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
