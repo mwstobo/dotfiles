@@ -349,6 +349,8 @@
 (use-package flymake-eslint
   :straight t
   :commands flymake-eslint-enable
+  :custom
+  (flymake-eslint-defer-binary-check t)
   :init
   (add-hook 'typescript-ts-mode-hook #'flymake-eslint-enable))
 
