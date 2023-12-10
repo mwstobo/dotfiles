@@ -177,8 +177,8 @@
   (org-hide-emphasis-markers t)
   (org-pretty-entities t)
   (org-startup-indented t)
-  (org-hide-leading-stars t)
-  (org-export-with-toc)
+  (org-indent-indentation-per-level 0)
+  (org-indent-mode-turns-on-hiding-stars nil)
   (org-agenda-files (directory-files-recursively "~/org" "\\.org$"))
   (org-todo-keywords '("TODO(t)" "NEXT(n)" "|" "WAITING(w)" "DONE(d)")))
 
