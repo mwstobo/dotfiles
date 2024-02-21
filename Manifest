@@ -7,3 +7,4 @@ init.vim          ~> $XDG_CONFIG_HOME/nvim/init.vim
 init.el           ~> $HOME/.emacs.d/init.el
 early-init.el     ~> $HOME/.emacs.d/early-init.el
 init-straight.el  ~> $HOME/.emacs.d/init/init-straight.el
+init-elpaca.el    ~> $HOME/.emacs.d/init/init-elpaca.el

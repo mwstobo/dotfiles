@@ -5,8 +5,11 @@
 ;;; Init load path
 (add-to-list 'load-path (expand-file-name "init/" user-emacs-directory))
 
-;;; straight
-(require 'init-straight)
+;;; elpaca
+(require 'init-elpaca)
+(elpaca elpaca-use-package
+        (elpaca-use-package-mode))
+(elpaca-wait)
 
 ;;; Configuration from the simple package
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
@@ -104,11 +107,11 @@
                   '("secrets:Default keyring" "secrets:Login"))))
 
 (use-package avy
-  :straight t
+  :ensure t
   :bind ("M-n" . avy-goto-char-timer))
 
 (use-package consult
-  :straight t
+  :ensure t
   :bind (("C-x b" . consult-buffer)
          ("C-x 4 b" . consult-buffer-other-window)
          ("C-x 5 b" . consult-buffer-other-frame)
@@ -116,7 +119,7 @@
 
 ;;; Vertico
 (use-package vertico
-  :straight (:files (:defaults "extensions/*"))
+  :ensure (:files (:defaults "extensions/*"))
   :commands vertico-mode
   :init
   (vertico-mode)
@@ -132,13 +135,13 @@
         ("M-DEL" . vertico-directory-delete-word)))
 
 (use-package orderless
-  :straight t
+  :ensure t
   :custom
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
 (use-package corfu
-  :straight (:files (:defaults "extensions/*"))
+  :ensure (:files (:defaults "extensions/*"))
   :after orderless
   :commands global-corfu-mode
   :custom
@@ -156,7 +159,7 @@
   (add-hook 'corfu-mode-hook #'corfu-popupinfo-mode))
 
 (use-package kind-icon
-  :straight t
+  :ensure t
   :after corfu
   :commands kind-icon-margin-formatter
   :custom
@@ -165,7 +168,7 @@
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package marginalia
-  :straight t
+  :ensure t
   :commands marginalia-mode
   :init
   (marginalia-mode))
@@ -186,7 +189,7 @@
   :bind ("C-c a" . org-agenda))
 
 (use-package verb
-  :straight t
+  :ensure t
   :after org
   :config (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
 
@@ -203,115 +206,115 @@
   (js-indent-level 2))
 
 (use-package go-mode
-  :straight t
+  :ensure t
   :mode "\\.go\\'"
   :init
   (add-hook 'go-mode-hook (setq indent-tabs-mode t)))
 
 (use-package rust-mode
-  :straight t
+  :ensure t
   :mode "\\.rs\\'")
 
 (use-package tuareg
-  :straight t
+  :ensure t
   :mode
   ("\\.ml[ip]?\\'" . tuareg-mode)
   ("\\.opam\\'" . tuareg-opam-mode))
 
 (use-package dune
   :mode ("\\(?:\\`\\|/\\)dune\\(?:\\.inc\\|\\-project\\)?\\'" . dune-mode)
-  :straight t)
+  :ensure t)
 
 (use-package kotlin-mode
-  :straight t
+  :ensure t
   :mode "\\.kts?\\'")
 
 (use-package pkgbuild-mode
-  :straight t
+  :ensure t
   :mode "/PKGBUILD\\'")
 
 (use-package docker-compose-mode
-  :straight t
+  :ensure t
   :mode "docker-compose[^/]*\\.ya?ml\\'")
 
 (use-package terraform-mode
-  :straight t
+  :ensure t
   :mode "\\.tf\\(vars\\)?\\'"
   :init
   (add-hook 'terraform-mode-hook #'(lambda () (setq create-lockfiles nil))))
 
 (use-package dockerfile-mode
-  :straight t
+  :ensure t
   :mode "Dockerfile\\'")
 
 (use-package json-mode
-  :straight t
+  :ensure t
   :mode "\\.json\\'")
 
 (use-package graphql-mode
-  :straight t
+  :ensure t
   :mode "\\.\\(graphql\\|gql\\)\\'")
 
 (use-package sql-indent
-  :straight t
+  :ensure t
   :mode ("\\.sql\\'" . sqlind-minor-mode))
 
 (use-package typescript-mode
-  :straight t
+  :ensure t
   :mode "\\.tsx?\\'")
 
 (use-package markdown-mode
-  :straight t
+  :ensure t
   :mode ("README\\.md\\'" . gfm-mode)
   :custom
   (markdown-command "markdown"))
 
 (use-package protobuf-mode
-  :straight t
+  :ensure t
   :mode ("\\.proto\\'"))
 
 (use-package plantuml-mode
-  :straight t
+  :ensure t
   :mode ("\\.\\(plantuml\\|pum\\|plu\\)\\'")
   :custom
   (plantuml-default-exec-mode 'executable)
   (plantuml-executable-path "/usr/local/bin/plantuml"))
 
 (use-package nftables-mode
-  :straight t
+  :ensure t
   :mode ("/etc/nftables.conf" "\\.nft\\(?:ables\\)?\\'")
   :interpreter ("nft\\(?:ables\\)?"))
 
 (use-package nginx-mode
-  :straight t
+  :ensure t
   :mode ("nginx\\.conf\\'" "/nginx/.+\\.conf\\'"))
 
 (use-package jinja2-mode
-  :straight t
+  :ensure t
   :mode ("\\.jinja2\\'" "\\.j2\\'"))
 
 ;;; Other useful packages
 (use-package which-key
-  :straight t
+  :ensure t
   :commands which-key-mode
   :init
   (which-key-mode))
 
 (use-package magit
-  :straight t
+  :ensure t
   :commands magit-status
   :bind (("C-x g" . magit-status)
          ("C-c v" . magit-status)))
 
 (use-package git-link
-  :straight t
+  :ensure t
   :commands git-link git-link-commit)
 
 (use-package all-the-icons
-  :straight t)
+  :ensure t)
 
 (use-package olivetti
-  :straight t
+  :ensure t
   :commands olivetti-mode
   :init
   (defvar olivetti--line-spacing nil)
@@ -326,19 +329,20 @@
        (setq line-spacing olivetti--line-spacing))))
 
 (use-package topsy
-  :straight t)
+  :ensure t)
 
 (use-package mwim
-  :straight t
+  :ensure t
   :bind
   ("C-a" . mwim-beginning)
   ("C-e" . mwim-end))
 
 (use-package npm
-  :straight t)
+  :ensure t)
+
 
 (use-package prettier
-  :straight t
+  :ensure t
   :commands prettier-mode
   :init
   (add-hook 'typescript-mode-hook #'prettier-mode)
@@ -347,7 +351,7 @@
   (add-hook 'yaml-mode-hook #'prettier-mode))
 
 (use-package yasnippet
-  :straight t
+  :ensure t
   :commands yas-reload-all yas-minor-mode
   :init
   (yas-reload-all)
