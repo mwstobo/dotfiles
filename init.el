@@ -91,7 +91,7 @@
 
 (use-package flyspell
   :init
-  (add-hook 'text-mode-hook #'flyspell-mode))
+  (add-hook 'org-mode-hook #'flyspell-mode))
 
 (use-package simple
   :init
@@ -196,17 +196,20 @@
   (setq elisp-flymake-byte-compile-load-path load-path))
 
 (use-package js
+  :mode ("\\.js[mx]?\\'" . js-mode)
+  :bind (:map js-mode-map
+              ("M-." . nil))
   :custom
   (js-indent-level 2))
 
-(use-package go-ts-mode
+(use-package go-mode
+  :straight t
   :mode "\\.go\\'"
   :init
-  (add-hook 'go-mode-hook (setq indent-tabs-mode t))
-  :custom
-  (go-ts-mode-indent-offset 4))
+  (add-hook 'go-mode-hook (setq indent-tabs-mode t)))
 
-(use-package rust-ts-mode
+(use-package rust-mode
+  :straight t
   :mode "\\.rs\\'")
 
 (use-package tuareg
@@ -253,7 +256,8 @@
   :straight t
   :mode ("\\.sql\\'" . sqlind-minor-mode))
 
-(use-package typescript-ts-mode
+(use-package typescript-mode
+  :straight t
   :mode "\\.tsx?\\'")
 
 (use-package markdown-mode
@@ -299,10 +303,6 @@
   :bind (("C-x g" . magit-status)
          ("C-c v" . magit-status)))
 
-(use-package forge
-  :straight t
-  :after magit)
-
 (use-package git-link
   :straight t
   :commands git-link git-link-commit)
@@ -341,18 +341,10 @@
   :straight t
   :commands prettier-mode
   :init
-  (add-hook 'typescript-ts-mode-hook #'prettier-mode)
+  (add-hook 'typescript-mode-hook #'prettier-mode)
   (add-hook 'js-mode-hook #'prettier-mode)
   (add-hook 'markdown-mode-hook #'prettier-mode)
   (add-hook 'yaml-mode-hook #'prettier-mode))
-
-(use-package flymake-eslint
-  :straight t
-  :commands flymake-eslint-enable
-  :custom
-  (flymake-eslint-defer-binary-check t)
-  :init
-  (add-hook 'typescript-ts-mode-hook #'flymake-eslint-enable))
 
 (use-package yasnippet
   :straight t
@@ -361,13 +353,13 @@
   (yas-reload-all)
   (add-hook 'prog-mode-hook #'yas-minor-mode))
 
-(defun eglot-format-buffer-on-save ()
-  "Use eglot to autoformat after save."
-  (add-hook 'before-save-hook #'eglot-format-buffer))
 (use-package eglot
-  :commands eglot-format-buffer
+  :commands eglot eglot-format-buffer
   :init
-  (add-hook 'eglot-managed-mode-hook #'eglot-format-buffer-on-save))
+  (add-hook 'rust-mode-hook #'(lambda () (add-hook 'eglot-managed-mode-hook #'(lambda () (add-hook 'before-save-hook #'eglot-format-buffer)))))
+  (add-hook 'go-mode-hook #'(lambda () (add-hook 'eglot-managed-mode-hook #'(lambda () (add-hook 'before-save-hook #'eglot-format-buffer)))))
+  :config
+  (add-to-list 'eglot-server-programs '(terraform-mode . ("terraform-ls" "serve"))))
 
 ;;; Local config
 (use-package init-local
