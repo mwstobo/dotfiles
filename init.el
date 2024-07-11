@@ -368,6 +368,11 @@
   :config
   (add-to-list 'eglot-server-programs '(terraform-mode . ("terraform-ls" "serve"))))
 
+(use-package eglot-booster
+  :ensure (:host github :repo "jdtsmith/eglot-booster")
+  :after eglot
+  :config (eglot-booster-mode))
+
 ;;; Local config
 (use-package init-local
   :if (locate-library "init-local.el"))
