@@ -259,9 +259,11 @@
   :ensure t
   :mode ("\\.sql\\'" . sqlind-minor-mode))
 
-(use-package typescript-mode
-  :ensure t
-  :mode "\\.tsx?\\'")
+(use-package typescript-ts-mode
+  :mode "\\.ts\\'")
+
+(use-package tsx-ts-mode
+  :mode "\\.tsx\\'")
 
 (use-package markdown-mode
   :ensure t
@@ -345,7 +347,8 @@
   :ensure t
   :commands prettier-mode
   :init
-  (add-hook 'typescript-mode-hook #'prettier-mode)
+  (add-hook 'typescript-ts-mode-hook #'prettier-mode)
+  (add-hook 'tsx-ts-mode-hook #'prettier-mode)
   (add-hook 'js-mode-hook #'prettier-mode)
   (add-hook 'markdown-mode-hook #'prettier-mode)
   (add-hook 'yaml-mode-hook #'prettier-mode))
