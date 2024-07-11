@@ -343,10 +343,6 @@
   ("C-a" . mwim-beginning)
   ("C-e" . mwim-end))
 
-(use-package npm
-  :ensure t)
-
-
 (use-package prettier
   :ensure t
   :commands prettier-mode
