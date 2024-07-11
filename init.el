@@ -302,8 +302,12 @@
   :init
   (which-key-mode))
 
+(use-package transient
+  :ensure t)
+
 (use-package magit
   :ensure t
+  :after transient
   :commands magit-status
   :bind (("C-x g" . magit-status)
          ("C-c v" . magit-status)))
