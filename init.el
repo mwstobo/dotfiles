@@ -335,7 +335,11 @@
        (setq line-spacing olivetti--line-spacing))))
 
 (use-package topsy
-  :ensure t)
+  :ensure t
+  :commands topsy-mode
+  :init
+  (add-hook 'prog-mode-hook #'topsy-mode)
+  (add-hook 'magit-section-mode-hook #'topsy-mode))
 
 (use-package mwim
   :ensure t
