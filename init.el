@@ -5,11 +5,10 @@
 ;;; Init load path
 (add-to-list 'load-path (expand-file-name "init/" user-emacs-directory))
 
-;;; elpaca
-(require 'init-elpaca)
-(elpaca elpaca-use-package
-        (elpaca-use-package-mode))
-(elpaca-wait)
+;;; package-vc-install - REMOVE IN EMACS 30
+(unless (package-installed-p 'vc-use-package)
+  (package-vc-install "https://github.com/slotThe/vc-use-package"))
+(require 'vc-use-package)
 
 ;;; Configuration from the simple package
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
@@ -57,6 +56,12 @@
     (save-excursion
       (forward-char 1)
       (just-one-space 1))))
+
+;;; Package.el
+(use-package package
+  :init
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (package-initialize))
 
 ;;; Backup configuration
 (use-package savehist
@@ -119,7 +124,7 @@
 
 ;;; Vertico
 (use-package vertico
-  :ensure (:files (:defaults "extensions/*"))
+  :ensure t
   :commands vertico-mode
   :init
   (vertico-mode)
@@ -141,7 +146,7 @@
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
 (use-package corfu
-  :ensure (:files (:defaults "extensions/*"))
+  :ensure t
   :after orderless
   :commands global-corfu-mode
   :custom
@@ -373,7 +378,7 @@
   (add-to-list 'eglot-server-programs '(terraform-mode . ("terraform-ls" "serve"))))
 
 (use-package eglot-booster
-  :ensure (:host github :repo "jdtsmith/eglot-booster")
+  :vc (:fetcher github :repo jdtsmith/eglot-booster)
   :after eglot
   :config (eglot-booster-mode))
 
