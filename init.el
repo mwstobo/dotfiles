@@ -5,11 +5,6 @@
 ;;; Init load path
 (add-to-list 'load-path (expand-file-name "init/" user-emacs-directory))
 
-;;; package-vc-install - REMOVE IN EMACS 30
-(unless (package-installed-p 'vc-use-package)
-  (package-vc-install "https://github.com/slotThe/vc-use-package"))
-(require 'vc-use-package)
-
 ;;; Configuration from the simple package
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
 (column-number-mode)
@@ -49,19 +44,10 @@
     (find-file user-init-file)))
 (global-set-key (kbd "C-C I") #'my-find-init-file)
 
-;;; Kill excess whitespace when joining lines
-(defadvice kill-line (before kill-line-autoreindent activate)
-  "Kill excess whitespace when joining lines."
-  (when (and (eolp) (not (bolp)))
-    (save-excursion
-      (forward-char 1)
-      (just-one-space 1))))
-
 ;;; Package.el
 (use-package package
   :init
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-  (package-initialize))
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
 
 ;;; Backup configuration
 (use-package savehist
@@ -376,11 +362,6 @@
   (add-hook 'go-mode-hook #'(lambda () (add-hook 'eglot-managed-mode-hook #'(lambda () (add-hook 'before-save-hook #'eglot-format-buffer)))))
   :config
   (add-to-list 'eglot-server-programs '(terraform-mode . ("terraform-ls" "serve"))))
-
-(use-package eglot-booster
-  :vc (:fetcher github :repo jdtsmith/eglot-booster)
-  :after eglot
-  :config (eglot-booster-mode))
 
 ;;; Local config
 (use-package init-local
