@@ -49,6 +49,11 @@
   :init
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
 
+;;; Search with ripgrep
+(use-package xref
+  :custom
+  (xref-search-program #'ripgrep))
+
 ;;; Backup configuration
 (use-package savehist
   :init
