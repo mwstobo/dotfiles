@@ -295,6 +295,9 @@
   :ensure t
   :mode ("\\.jinja2\\'" "\\.j2\\'"))
 
+(use-package bazel
+  :ensure t)
+
 ;;; Other useful packages
 (use-package which-key
   :ensure t
