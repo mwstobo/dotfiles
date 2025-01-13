@@ -106,6 +106,14 @@
                     '(macos-keychain-internet)
                   '("secrets:Default keyring" "secrets:Login"))))
 
+(use-package project
+  :after xref
+  :init
+  (defun project-find-regexp-with-unique-buffer (orig-fun &rest args)
+    (let ((xref-buffer-name (format "%s %s" xref-buffer-name (car args))))
+      (apply orig-fun args)))
+  (advice-add 'project-find-regexp :around #'project-find-regexp-with-unique-buffer))
+
 (use-package avy
   :ensure t
   :bind ("M-n" . avy-goto-char-timer))
@@ -209,7 +217,10 @@
   :ensure t
   :mode "\\.go\\'"
   :init
-  (add-hook 'go-mode-hook (setq indent-tabs-mode t)))
+  (add-hook 'go-mode-hook (setq indent-tabs-mode t))
+  (add-hook 'go-mode-hook #'(lambda () (add-hook 'before-save-hook #'gofmt-before-save)))
+  :custom
+  (gofmt-command "goimports"))
 
 (use-package rust-mode
   :ensure t
@@ -370,10 +381,24 @@
   (add-hook 'prog-mode-hook #'yas-minor-mode))
 
 (use-package eglot
-  :commands eglot eglot-format-buffer
+  :commands eglot eglot-format-buffer eglot-code-actions
   :init
-  (add-hook 'rust-mode-hook #'(lambda () (add-hook 'eglot-managed-mode-hook #'(lambda () (add-hook 'before-save-hook #'eglot-format-buffer)))))
-  (add-hook 'go-mode-hook #'(lambda () (add-hook 'eglot-managed-mode-hook #'(lambda () (add-hook 'before-save-hook #'eglot-format-buffer)))))
+  (setq-default
+   eglot-workspace-configuration
+   (quote (:gopls (:staticcheck t :hints (:parameterNames t :compositeLiteralTypes t)))))
+  (add-hook
+   'rust-mode-hook
+   #'(lambda ()
+       (add-hook
+        'eglot-managed-mode-hook
+        #'(lambda ()
+            (add-hook 'before-save-hook #'eglot-format-buffer)))))
+  (defun xref-find-references-with-eglot (orig-fun &rest args)
+    (if (bound-and-true-p eglot--managed-mode)
+        (let ((xref-buffer-name (format "%s %s" xref-buffer-name (symbol-at-point))))
+          (apply orig-fun args))
+      (apply orig-fun args)))
+  (advice-add 'xref-find-references :around #'xref-find-references-with-eglot)
   :config
   (add-to-list 'eglot-server-programs '(terraform-mode . ("terraform-ls" "serve"))))
 
