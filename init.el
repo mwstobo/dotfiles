@@ -377,6 +377,9 @@
   :config
   (add-to-list 'eglot-server-programs '(terraform-mode . ("terraform-ls" "serve"))))
 
+(use-package dape
+  :ensure t)
+
 ;;; Local config
 (use-package init-local
   :if (locate-library "init-local.el"))
