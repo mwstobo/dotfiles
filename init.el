@@ -96,6 +96,10 @@
   :init
   (add-hook 'text-mode-hook #'visual-line-mode))
 
+(use-package grep
+  :custom
+  (grep-find-template "find -H <D> <X> -type f <F> -exec rg <C> --no-heading -H <R> \\{\\} +"))
+
 (use-package auth-source
   :custom
   (auth-sources (if (string= system-type "darwin")
