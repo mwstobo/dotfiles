@@ -317,7 +317,9 @@
 
 (use-package git-link
   :ensure t
-  :commands git-link git-link-commit)
+  :commands git-link git-link-commit
+  :custom
+  (git-link-open-in-browser t))
 
 (use-package all-the-icons
   :ensure t)
