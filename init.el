@@ -114,6 +114,9 @@
       (apply orig-fun args)))
   (advice-add 'project-find-regexp :around #'project-find-regexp-with-unique-buffer))
 
+(use-package rg
+  :ensure t)
+
 (use-package avy
   :ensure t
   :bind ("M-n" . avy-goto-char-timer))
@@ -369,9 +372,7 @@
   :init
   (add-hook 'typescript-ts-mode-hook #'prettier-mode)
   (add-hook 'tsx-ts-mode-hook #'prettier-mode)
-  (add-hook 'js-mode-hook #'prettier-mode)
-  (add-hook 'markdown-mode-hook #'prettier-mode)
-  (add-hook 'yaml-mode-hook #'prettier-mode))
+  (add-hook 'js-mode-hook #'prettier-mode))
 
 (use-package yasnippet
   :ensure t
