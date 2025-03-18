@@ -54,6 +54,11 @@
   :custom
   (xref-search-program #'ripgrep))
 
+;;; Isearch
+(use-package isearch
+  :custom
+  (isearch-lazy-count t))
+
 ;;; Backup configuration
 (use-package savehist
   :init
