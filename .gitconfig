@@ -15,7 +15,7 @@
 [merge]
 	ff = only
 [core]
-	excludesfile = ~/.gitignore_global
+	excludesFile = ~/.gitignore_global
 [github]
 	user = mwstobo
 [init]
