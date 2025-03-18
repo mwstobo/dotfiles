@@ -163,14 +163,12 @@
 (use-package corfu
   :ensure t
   :after orderless
-  :commands global-corfu-mode
+  :hook (prog-mode . corfu-mode)
   :custom
   (corfu-quit-at-boundary nil)
   (corfu-quit-no-match t)
   (corfu-cycle t)
-  (corfu-auto t)
-  :init
-  (global-corfu-mode))
+  (corfu-auto t))
 
 (use-package corfu-popupinfo
   :after corfu
