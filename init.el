@@ -425,18 +425,8 @@
   (add-hook 'prog-mode-hook #'yas-minor-mode))
 
 (use-package eglot
-  :commands eglot eglot-format-buffer eglot-code-actions
+  :commands eglot eglot-format-buffer eglot-code-actions xref-find-references-with-eglot
   :init
-  (setq-default
-   eglot-workspace-configuration
-   (quote (:gopls (:staticcheck t :hints (:parameterNames t :compositeLiteralTypes t)))))
-  (add-hook
-   'rust-mode-hook
-   #'(lambda ()
-       (add-hook
-        'eglot-managed-mode-hook
-        #'(lambda ()
-            (add-hook 'before-save-hook #'eglot-format-buffer)))))
   (defun xref-find-references-with-eglot (orig-fun &rest args)
     (if (bound-and-true-p eglot--managed-mode)
         (let ((xref-buffer-name (format "%s %s" xref-buffer-name (symbol-at-point))))
@@ -444,7 +434,27 @@
       (apply orig-fun args)))
   (advice-add 'xref-find-references :around #'xref-find-references-with-eglot)
   :config
-  (add-to-list 'eglot-server-programs '(terraform-mode . ("terraform-ls" "serve"))))
+  (add-to-list 'eglot-server-programs '(terraform-mode . ("terraform-ls" "serve")))
+  (add-to-list 'eglot-server-programs
+               '((go-mode go-dot-mod-mode go-dot-work-mode go-ts-mode go-mod-ts-mode) .
+                 ("gopls"
+                  :initializationOptions
+                  (:usePlaceholders
+                   t
+                   :staticcheck
+                   t
+                   :hints (
+                           :parameterNames
+                           t
+                           :compositeLiteralTypes
+                           t)
+                   ))))
+  (add-to-list 'eglot-server-programs
+               '((rust-mode rust-ts-mode) .
+                 ("rust-analyzer"
+                  :initializationOptions
+                  (:check (:command "clippy"))))))
+
 
 (use-package dape
   :ensure t)
