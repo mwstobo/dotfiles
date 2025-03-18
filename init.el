@@ -85,6 +85,9 @@
   :custom
   (compilation-scroll-output 'first-error))
 
+(use-package ansi-color
+  :hook (compilation-filter . ansi-color-compilation-filter))
+
 (use-package display-line-numbers
   :init
   (add-hook 'prog-mode-hook #'display-line-numbers-mode))
