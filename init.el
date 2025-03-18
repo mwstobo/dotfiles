@@ -116,6 +116,7 @@
 
 (use-package project
   :after xref
+  :commands project-find-regexp-with-unique-buffer
   :init
   (defun project-find-regexp-with-unique-buffer (orig-fun &rest args)
     (let ((xref-buffer-name (format "%s %s" xref-buffer-name (car args))))
@@ -226,6 +227,7 @@
 
 (use-package go-mode
   :ensure t
+  :commands gofmt-before-save
   :mode "\\.go\\'"
   :init
   (add-hook 'go-mode-hook (setq indent-tabs-mode t))
@@ -235,7 +237,10 @@
 
 (use-package rust-mode
   :ensure t
-  :mode "\\.rs\\'")
+  :commands rust-enable-format-on-save
+  :mode "\\.rs\\'"
+  :init
+  (add-hook 'rust-mode-hook #'rust-enable-format-on-save))
 
 (use-package tuareg
   :ensure t
