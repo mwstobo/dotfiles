@@ -327,7 +327,6 @@
 
 ;;; Other useful packages
 (use-package which-key
-  :ensure t
   :commands which-key-mode
   :init
   (which-key-mode))
