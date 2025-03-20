@@ -98,7 +98,8 @@
 
 (use-package flyspell
   :init
-  (add-hook 'org-mode-hook #'flyspell-mode))
+  (add-hook 'org-mode-hook #'flyspell-mode)
+  (add-hook 'prod-mode-hook #'flyspell-prog-mode))
 
 (use-package simple
   :init
