@@ -2,65 +2,61 @@
 ;;; Commentary:
 ;;; Code:
 
-;;; Init load path
-(add-to-list 'load-path (expand-file-name "init/" user-emacs-directory))
+(defun my-find-init-file ()
+    "Open the \"user-init-file\"."
+    (interactive)
+    (let ((vc-follow-symlinks t))
+      (find-file user-init-file)))
 
-;;; Configuration from the simple package
-(add-hook 'before-save-hook #'delete-trailing-whitespace)
-(column-number-mode)
+(use-package emacs
+  :init
+  (add-to-list 'load-path (expand-file-name "init/" user-emacs-directory))
+  (tool-bar-mode 0)
+  (scroll-bar-mode 0)
+  (add-to-list 'default-frame-alist '(fullscreen . maximized))
+  (setq-default tab-width 4)
+  (setq-default mode-line-format (delete '(vc-mode vc-mode) mode-line-format))
+  (setq gc-cons-threshold 200000000)
+  (setq read-process-output-max (* 1024 1024))
+  (setq treesit-extra-load-path '("~/.emacs.d/tree-sitter/dist"))
+  (global-set-key (kbd "M-e") #'forward-word)
+  (global-set-key (kbd "C-C I") #'my-find-init-file))
 
-;;; Basic indentation
-(setq-default tab-width 4)
-(setq-default indent-tabs-mode nil)
+(use-package simple
+  :hook
+  (before-save . delete-trailing-whitespace)
+  (after-init . column-number-mode)
+  :init
+  (setq-default indent-tabs-mode nil))
 
-;;; Visual configuration
-(tool-bar-mode 0)
-(scroll-bar-mode 0)
-(load-theme 'wombat)
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
-(setq inhibit-startup-screen t)
-(setq-default mode-line-format (delete '(vc-mode vc-mode) mode-line-format))
+(use-package startup
+  :init
+  (setq inhibit-startup-screen t))
 
-;;; Performance tuning
-(setq gc-cons-threshold 200000000)           ; Performance tuning
-(setq read-process-output-max (* 1024 1024)) ; Performance tuning
+(use-package custom
+  :init
+  (load-theme 'wombat))
 
-;;; Tree sitter
-(setq treesit-extra-load-path '("~/.emacs.d/tree-sitter/dist"))
-
-;;; Setting up custom
-(setq custom-file "~/.emacs.d/custom.el") ; Set, but don't load
-
-;;; Movement control
-(global-set-key (kbd "M-e") #'forward-word)
+(use-package cus-edit
+  :init
+  ; Set, but don't load
+  (setq custom-file "~/.emacs.d/custom.el"))
 
 (use-package misc
   :bind ("M-f" . forward-to-word))
 
-;;; Init file access
-(defun my-find-init-file ()
-  "Open the \"user-init-file\"."
-  (interactive)
-  (let ((vc-follow-symlinks t))
-    (find-file user-init-file)))
-(global-set-key (kbd "C-C I") #'my-find-init-file)
-
-;;; Package.el
 (use-package package
   :init
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
 
-;;; Search with ripgrep
 (use-package xref
   :custom
   (xref-search-program #'ripgrep))
 
-;;; Isearch
 (use-package isearch
   :custom
   (isearch-lazy-count t))
 
-;;; Backup configuration
 (use-package savehist
   :init
   (savehist-mode))
