@@ -19,6 +19,7 @@
 (load-theme 'wombat)
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 (setq inhibit-startup-screen t)
+(setq-default mode-line-format (delete '(vc-mode vc-mode) mode-line-format))
 
 ;;; Performance tuning
 (setq gc-cons-threshold 200000000)           ; Performance tuning
