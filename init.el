@@ -131,6 +131,19 @@
 (use-package ring
   :commands ring-ref)
 
+(use-package moody
+  :ensure t
+  :commands
+  moody-replace-mode-line-front-space
+  moody-replace-mode-line-buffer-identification
+  moody-replace-eldoc-minibuffer-message-function
+  :custom
+  (moody-mode-line-height 20)
+  :init
+  (moody-replace-mode-line-front-space)
+  (moody-replace-mode-line-buffer-identification)
+  (moody-replace-eldoc-minibuffer-message-function))
+
 (use-package avy
   :ensure t
   :commands avy-action-copy-whole-line
