@@ -67,6 +67,11 @@ autocmd Filetype plaintex map j gj
 autocmd Filetype plaintex map k gk
 autocmd Filetype plaintex setlocal wrap linebreak noexpandtab
 
+let lua_file = stdpath("config") . "/lua/config.lua"
+if filereadable(lua_file)
+    lua require("config")
+endif
+
 " Supposed to be used with vim-plug
 let plugin_file = stdpath("config") . "/plugins.vim"
 if filereadable(plugin_file)
