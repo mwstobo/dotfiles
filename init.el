@@ -10,6 +10,7 @@
 
 (use-package emacs
   :init
+  (setq inhibit-startup-screen t)
   (add-to-list 'load-path (expand-file-name "init/" user-emacs-directory))
   (tool-bar-mode 0)
   (scroll-bar-mode 0)
@@ -18,9 +19,20 @@
   (setq-default mode-line-format (delete '(vc-mode vc-mode) mode-line-format))
   (setq gc-cons-threshold 200000000)
   (setq read-process-output-max (* 1024 1024))
-  (setq treesit-extra-load-path '("~/.emacs.d/tree-sitter/dist"))
   (global-set-key (kbd "M-e") #'forward-word)
   (global-set-key (kbd "C-C I") #'my-find-init-file))
+
+(use-package treesit
+  :init
+  (setq treesit-language-source-alist
+        '((go "https://github.com/tree-sitter/tree-sitter-go")
+          (gomod "https://github.com/camdencheek/tree-sitter-go-mod")
+          (html "https://github.com/tree-sitter/tree-sitter-html")
+          (json "https://github.com/tree-sitter/tree-sitter-json")
+          (make "https://github.com/alemuller/tree-sitter-make")
+          (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+          (python "https://github.com/tree-sitter/tree-sitter-python")
+          (yaml "https://github.com/ikatyang/tree-sitter-yaml"))))
 
 (use-package simple
   :hook
@@ -28,10 +40,6 @@
   (after-init . column-number-mode)
   :init
   (setq-default indent-tabs-mode nil))
-
-(use-package startup
-  :init
-  (setq inhibit-startup-screen t))
 
 (use-package custom
   :init
@@ -86,21 +94,21 @@
   :hook (compilation-filter . ansi-color-compilation-filter))
 
 (use-package display-line-numbers
-  :init
-  (add-hook 'prog-mode-hook #'display-line-numbers-mode))
+  :hook
+  (prog-mode . display-line-numbers-mode))
 
 (use-package flymake
-  :init
-  (add-hook 'prog-mode-hook #'flymake-mode))
+  :hook
+  (prog-mode . flymake-mode))
 
 (use-package flyspell
-  :init
-  (add-hook 'org-mode-hook #'flyspell-mode)
-  (add-hook 'prod-mode-hook #'flyspell-prog-mode))
+  :hook
+  (text-mode . flyspell-mode)
+  (prog-mode . flyspell-prog-mode))
 
 (use-package simple
-  :init
-  (add-hook 'text-mode-hook #'visual-line-mode))
+  :hook
+  (text-mode . visual-line-mode))
 
 (use-package grep
   :custom
@@ -111,6 +119,12 @@
   (auth-sources (if (string= system-type "darwin")
                     '(macos-keychain-internet)
                   '("secrets:Default keyring" "secrets:Login"))))
+
+(use-package midnight
+  :init
+  (midnight-mode)
+  :config
+  (add-to-list 'clean-buffer-list-kill-regexps (rx buffer-start "*xref*")))
 
 (use-package project
   :after xref
@@ -144,7 +158,7 @@
   :ensure t
   :commands avy-action-copy-whole-line
   :bind ("M-j" . avy-goto-char-timer)
-  :init
+  :config
   (defun avy-action-kill-whole-line (pt)
     (save-excursion
       (goto-char pt)
@@ -181,7 +195,6 @@
          ("C-x 5 b" . consult-buffer-other-frame)
          ("C-x p b" . consult-project-buffer)))
 
-;;; Vertico
 (use-package vertico
   :ensure t
   :commands vertico-mode
@@ -207,7 +220,9 @@
 (use-package corfu
   :ensure t
   :after orderless
-  :hook (prog-mode . corfu-mode)
+  :hook
+  (prog-mode . corfu-mode)
+  (eglot-managed-mode . corfu-mode)
   :custom
   (corfu-quit-at-boundary nil)
   (corfu-quit-no-match t)
@@ -217,8 +232,8 @@
 (use-package corfu-popupinfo
   :after corfu
   :commands corfu-popupinfo-mode
-  :init
-  (add-hook 'corfu-mode-hook #'corfu-popupinfo-mode))
+  :hook
+  (corfu-mode . corfu-popupinfo-mode))
 
 (use-package kind-icon
   :ensure t
@@ -256,6 +271,10 @@
   :config (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
 
 ;;; Installed major modes
+(use-package sh-script
+  :custom
+  (sh-basic-offset 2))
+
 (use-package elisp-mode
   :init
   (setq elisp-flymake-byte-compile-load-path load-path))
@@ -281,8 +300,8 @@
   :ensure t
   :commands rust-enable-format-on-save
   :mode "\\.rs\\'"
-  :init
-  (add-hook 'rust-mode-hook #'rust-enable-format-on-save))
+  :hook
+  (rust-mode . rust-enable-format-on-save))
 
 (use-package tuareg
   :ensure t
@@ -383,6 +402,10 @@
   :bind (("C-x g" . magit-status)
          ("C-c v" . magit-status)))
 
+(use-package forge
+  :ensure t
+  :after magit)
+
 (use-package git-link
   :ensure t
   :commands git-link git-link-commit
@@ -394,9 +417,12 @@
 
 (use-package olivetti
   :ensure t
+  :after org
   :commands olivetti-mode
   :init
   (defvar olivetti--line-spacing nil)
+  :hook
+  (org-mode . olivetti-mode)
   :custom
   (olivetti-style 'fancy)
   (olivetti-mode-on-hook
@@ -410,9 +436,9 @@
 (use-package topsy
   :ensure t
   :commands topsy-mode
-  :init
-  (add-hook 'prog-mode-hook #'topsy-mode)
-  (add-hook 'magit-section-mode-hook #'topsy-mode))
+  :hook
+  (prog-mode . topsy-mode)
+  (magit-section-mode . topsy-mode))
 
 (use-package mwim
   :ensure t
@@ -420,20 +446,13 @@
   ("C-a" . mwim-beginning)
   ("C-e" . mwim-end))
 
-(use-package prettier
-  :ensure t
-  :commands prettier-mode
-  :init
-  (add-hook 'typescript-ts-mode-hook #'prettier-mode)
-  (add-hook 'tsx-ts-mode-hook #'prettier-mode)
-  (add-hook 'js-mode-hook #'prettier-mode))
-
 (use-package yasnippet
   :ensure t
   :commands yas-reload-all yas-minor-mode
+  :hook
+  (prog-mode . yas-minor-mode)
   :init
-  (yas-reload-all)
-  (add-hook 'prog-mode-hook #'yas-minor-mode))
+  (yas-reload-all))
 
 (use-package eglot
   :commands eglot eglot-format-buffer eglot-code-actions xref-find-references-with-eglot
@@ -450,9 +469,7 @@
                '((go-mode go-dot-mod-mode go-dot-work-mode go-ts-mode go-mod-ts-mode) .
                  ("gopls"
                   :initializationOptions
-                  (:usePlaceholders
-                   t
-                   :staticcheck
+                  (:staticcheck
                    t
                    :hints (
                            :parameterNames
