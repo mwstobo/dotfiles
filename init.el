@@ -22,18 +22,6 @@
   (global-set-key (kbd "M-e") #'forward-word)
   (global-set-key (kbd "C-C I") #'my-find-init-file))
 
-(use-package treesit
-  :init
-  (setq treesit-language-source-alist
-        '((go "https://github.com/tree-sitter/tree-sitter-go")
-          (gomod "https://github.com/camdencheek/tree-sitter-go-mod")
-          (html "https://github.com/tree-sitter/tree-sitter-html")
-          (json "https://github.com/tree-sitter/tree-sitter-json")
-          (make "https://github.com/alemuller/tree-sitter-make")
-          (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-          (python "https://github.com/tree-sitter/tree-sitter-python")
-          (yaml "https://github.com/ikatyang/tree-sitter-yaml"))))
-
 (use-package simple
   :hook
   (before-save . delete-trailing-whitespace)
@@ -153,40 +141,6 @@
   (moody-replace-mode-line-front-space)
   (moody-replace-mode-line-buffer-identification)
   (moody-replace-eldoc-minibuffer-message-function))
-
-(use-package avy
-  :ensure t
-  :commands avy-action-copy-whole-line
-  :bind ("M-j" . avy-goto-char-timer)
-  :config
-  (defun avy-action-kill-whole-line (pt)
-    (save-excursion
-      (goto-char pt)
-      (kill-whole-line))
-    (select-window
-     (cdr
-      (ring-ref avy-ring 0)))
-    t)
-  (setf (alist-get ?k avy-dispatch-alist) 'avy-action-kill-stay
-        (alist-get ?K avy-dispatch-alist) 'avy-action-kill-whole-line)
-  (defun avy-action-copy-whole-line (pt)
-    (save-excursion
-      (goto-char pt)
-      (cl-destructuring-bind (start . end)
-          (bounds-of-thing-at-point 'line)
-        (copy-region-as-kill start end)))
-    (select-window
-     (cdr
-      (ring-ref avy-ring 0)))
-    t)
-  (setf (alist-get ?w avy-dispatch-alist) 'avy-action-copy
-        (alist-get ?W avy-dispatch-alist) 'avy-action-copy-whole-line)
-  (defun avy-action-yank-whole-line (pt)
-    (avy-action-copy-whole-line pt)
-    (save-excursion (yank))
-    t)
-  (setf (alist-get ?y avy-dispatch-alist) 'avy-action-yank
-        (alist-get ?Y avy-dispatch-alist) 'avy-action-yank-whole-line))
 
 (use-package consult
   :ensure t
@@ -433,12 +387,11 @@
    #'(lambda ()
        (setq line-spacing olivetti--line-spacing))))
 
-(use-package topsy
-  :ensure t
-  :commands topsy-mode
-  :hook
-  (prog-mode . topsy-mode)
-  (magit-section-mode . topsy-mode))
+(use-package breadcrumb
+  :ensure
+  :commands breadcrumb-mode
+  :init
+  (breadcrumb-mode))
 
 (use-package mwim
   :ensure t
@@ -486,6 +439,13 @@
 
 (use-package dape
   :ensure t)
+
+(use-package flash
+  :ensure t
+  :commands (flash-jump flash-isearch-mode)
+  :bind ("M-j" . flash-jump)
+  :config
+  (flash-isearch-mode))
 
 ;;; Local config
 (use-package init-local
